@@ -1,0 +1,17 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "author": "Luqir",
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "devDependencies": {
+    "vuepress": "1.5.3",
+    "vuepress-theme-reco": "1.5.5"
+  },
+  "dependencies": {
+    "vue-class-component": "^7.2.3"
+  },
+  "description": "积一时之跬步，臻千里之遥程"
+}
