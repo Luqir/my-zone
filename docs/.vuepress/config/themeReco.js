@@ -17,7 +17,7 @@ module.exports = {
   lastUpdated: 'Last Updated',
 
   // 作者
-  author: 'Luqir',
+  author: 'luqirong',
   authorAvatar: '/avatar.png',
 
   // 备案号 string | boolean
@@ -41,4 +41,10 @@ module.exports = {
       link: 'https://www.baidu.com',
     },
   ],
+
+  // 评论 Valine 
+  valineConfig: {
+    appId: 'eSVAWwXrWB8Xln9YtnJLlrkC-gzGzoHsz',
+    appKey: 'uIc2nTu8NGFJPKSNGKfRkrHo',
+  }
 }

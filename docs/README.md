@@ -1,7 +1,7 @@
 ---
 home: true
-heroText: 寒含函
-tagline: A simple and beautiful vuepress blog theme.
+heroText: ' '
+tagline: ' '
 # heroImage: /hero.png
 # heroImageStyle: {
 #   maxWidth: '600px',
@@ -11,8 +11,9 @@ tagline: A simple and beautiful vuepress blog theme.
 #   background: '#fff',
 #   borderRadius: '1rem',
 # }
+bgImage: /bgImg.jpg
 bgImageStyle: {
-  height: '450px'
+  height: '100vh'
 }
 isShowTitleInHome: false
 actionText: Guide
