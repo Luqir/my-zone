@@ -8,7 +8,7 @@ module.exports = {
       text: 'Category', // 默认 “分类”
     },
     tag: {
-      location: 3, // 在导航栏菜单中所占的位置，默认3
+      location: 4, // 在导航栏菜单中所占的位置，默认3
       text: 'Tag', // 默认 “标签”
     },
   },
@@ -18,7 +18,7 @@ module.exports = {
 
   // 作者
   author: 'luqirong',
-  authorAvatar: '/avatar.png',
+  authorAvatar: '/avatar-min.gif',
 
   // 备案号 string | boolean
   record: false,
@@ -32,13 +32,13 @@ module.exports = {
       title: '寒含函',
       desc: '积一时之跬步，臻千里之遥程',
       email: 'luqir123@qq.com',
-      link: 'https://www.baidu.com',
+      link: 'http://www.luqirong.com',
     },
     {
       title: 'vuepress-theme-reco',
       desc: 'A simple and beautiful vuepress Blog & Doc theme.',
       avatar: 'https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png',
-      link: 'https://www.baidu.com',
+      link: 'https://vuepress-theme-reco.recoluan.com/',
     },
   ],
 
@@ -46,5 +46,8 @@ module.exports = {
   valineConfig: {
     appId: 'eSVAWwXrWB8Xln9YtnJLlrkC-gzGzoHsz',
     appKey: 'uIc2nTu8NGFJPKSNGKfRkrHo',
-  }
+  },
+
+  // 腾讯公益404界面
+  // noFoundPageByTencent: false
 }

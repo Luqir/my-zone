@@ -4,7 +4,7 @@ module.exports = {
   title: '寒含函の博客',
 
   // 加载页介绍
-  description: '积一时之跬步，臻千里之遥程',
+  description: ' ',
 
   // 项目打包目录
   dest: 'public',

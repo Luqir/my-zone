@@ -1,7 +1,7 @@
 ---
 home: true
-heroText: ' '
-tagline: ' '
+# heroText: null
+# tagline: null
 # heroImage: /hero.png
 # heroImageStyle: {
 #   maxWidth: '600px',
@@ -11,7 +11,7 @@ tagline: ' '
 #   background: '#fff',
 #   borderRadius: '1rem',
 # }
-bgImage: /bgImg.jpg
+# bgImage: /bgImg.jpg
 bgImageStyle: {
   height: '100vh'
 }
@@ -20,9 +20,9 @@ actionText: Guide
 actionLink: /views/blogs/other/guide
 features:
 - title: Yesterday
-  details: 开发一款看着开心、写着顺手的 vuepress 博客主题
+  details: 起飞
 - title: Today
-  details: 希望帮助更多的人花更多的时间在内容创作上，而不是博客搭建上
+  details: 起飞
 - title: Tomorrow
-  details: 希望更多的爱好者能够参与进来，帮助这个主题更好的成长
+  details: 起飞
 ---

@@ -1,8 +1,8 @@
 // 导航栏配置
 module.exports = [
   { text: 'Home', link: '/', icon: 'reco-home' },
+  { text: 'Docs', icon: 'reco-document', items: [{ text: '网工软考', link: '/views/docs/network-engineer/' }] },
   { text: 'TimeLine', link: '/timeline/', icon: 'reco-date' },
-  { text: 'Docs', icon: 'reco-message', items: [{ text: '网工软考', link: '/views/docs/network-engineer/' }] },
   {
     text: 'Contact',
     icon: 'reco-message',
