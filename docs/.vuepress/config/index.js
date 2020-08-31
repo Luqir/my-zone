@@ -11,7 +11,7 @@ module.exports = Object.assign({}, themeReco, {
 
   // 自动形成侧边导航
   subSidebar: 'auto',
-  sidebarDepth: 4,
+  sidebarDepth: 3,
 
   // 搜索设置
   search: true,

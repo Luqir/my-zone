@@ -1,7 +1,7 @@
 const themeConfig = require('./config/')
 
 module.exports = {
-  title: '寒含函の博客',
+  title: '寒含函の空间',
 
   // 加载页介绍
   description: ' ',
