@@ -5,5 +5,5 @@ tags:
 ---
 
 <ClientOnly>
-  <Exam></Exam>
+  <exam-index></exam-index>
 </ClientOnly>
