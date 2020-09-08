@@ -1,6 +1,7 @@
 <template>
   <div>
     <button @click="change">{{buttonName}}</button>
+    <el-button>默认按钮</el-button>
     <div class="xx">测试</div>
   </div>
 </template>
@@ -16,6 +17,8 @@ export default {
     change() {
       console.log(111);
     }
+  },
+  created() {
   }
 };
 </script>

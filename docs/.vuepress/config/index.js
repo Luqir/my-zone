@@ -7,7 +7,7 @@ module.exports = Object.assign({}, themeReco, {
   sidebar,
 
   // 左上角logo
-  // logo: '/logo.png',
+  // logo: '/images/logo.png',
 
   // 自动形成侧边导航
   subSidebar: 'auto',

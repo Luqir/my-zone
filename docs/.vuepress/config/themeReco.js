@@ -18,7 +18,7 @@ module.exports = {
 
   // 作者
   author: 'luqirong',
-  authorAvatar: '/avatar-min.gif',
+  authorAvatar: '/images/avatar-min.gif',
 
   // 备案号 string | boolean
   record: false,

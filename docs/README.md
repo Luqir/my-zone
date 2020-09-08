@@ -2,7 +2,7 @@
 home: true
 # heroText: null
 # tagline: null
-# heroImage: /hero.png
+# heroImage: /images/hero.png
 # heroImageStyle: {
 #   maxWidth: '600px',
 #   width: '100%',
@@ -11,7 +11,7 @@ home: true
 #   background: '#fff',
 #   borderRadius: '1rem',
 # }
-# bgImage: /bgImg.jpg
+# bgImage: /images/bgImg.jpg
 bgImageStyle: {
   height: '100vh'
 }
