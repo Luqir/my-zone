@@ -1,6 +1,17 @@
-module.exports = {
+let valineConfigObj = {}
+if (process.env.NODE_ENV !== 'development') {
+  valineConfigObj = {
+    // 评论 Valine: 开发时不显示以免开发时页面阅读次数就非常高
+    valineConfig: {
+      appId: 'eSVAWwXrWB8Xln9YtnJLlrkC-gzGzoHsz',
+      appKey: 'uIc2nTu8NGFJPKSNGKfRkrHo',
+    },
+  }
+}
+
+const config = {
   type: 'blog',
-  
+
   // 博客设置
   blogConfig: {
     category: {
@@ -42,12 +53,8 @@ module.exports = {
     },
   ],
 
-  // 评论 Valine 
-  valineConfig: {
-    appId: 'eSVAWwXrWB8Xln9YtnJLlrkC-gzGzoHsz',
-    appKey: 'uIc2nTu8NGFJPKSNGKfRkrHo',
-  },
-
   // 腾讯公益404界面
   // noFoundPageByTencent: false
 }
+
+module.exports = Object.assign(config, valineConfigObj)

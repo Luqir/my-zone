@@ -1,6 +1,6 @@
-const themeReco = require('./themeReco.js')
-const nav = require('./nav.js')
-const sidebar = require('./sidebar.js')
+const themeReco = require('./themeReco')
+const nav = require('./nav')
+const sidebar = require('./sidebar')
 
 module.exports = Object.assign({}, themeReco, {
   nav,

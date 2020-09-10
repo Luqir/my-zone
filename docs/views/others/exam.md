@@ -1,9 +1,28 @@
 ---
-title: 考试模块
-tags:
- - Exam
+isShowComments: false
 ---
 
-<ClientOnly>
-  <exam-index></exam-index>
-</ClientOnly>
+<template>
+  <div>
+    <exam
+      class="pagation"
+      :total="10"
+      :perPage="2"
+      @getCurrentPage="getCurrentPage"
+    ></exam>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+    };
+  },
+  methods: {
+  },
+  created() {}
+};
+</script>
+<style scoped>
+</style>
