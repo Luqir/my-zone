@@ -1,4 +1,5 @@
 ---
+title: Examination
 isShowComments: false
 ---
 
@@ -20,6 +21,8 @@ export default {
     };
   },
   methods: {
+    getCurrentPage(){
+    }
   },
   created() {}
 };
