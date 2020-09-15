@@ -1,188 +1,121 @@
 <template>
-  <div class="exam" v-show="show">
-    <div class="exam-list">
-      <span
-        class="jump"
-        v-show="currentPage > 1"
-        @click="goPrev"
-        unselectable="on">{{pagationLocales.prev}}</span>
-      <span
-        v-show="efont"
-        class="jump"
-        @click="jumpPage(1)">1</span>
-      <span
-        class="ellipsis"
-        v-show="efont">...</span>
-      <span
-        class="jump"
-        v-for="num in indexs"
-        :key="num"
-        :class="{bgprimary:currentPage==num}"
-        @click="jumpPage(num)">{{num}}</span>
-      <span
-        class="ellipsis"
-        v-show="efont&&currentPage<pages-4">...</span>
-      <span
-        v-show="efont&&currentPage<pages-4"
-        class="jump"
-        @click="jumpPage(pages)">{{pages}}</span>
-      <span
-        class="jump"
-        v-show="currentPage < pages"
-        @click="goNext">{{pagationLocales.next}}</span>
-      <span class="jumppoint">{{pagationLocales.jump}}</span>
-      <span class="jumpinp">
-        <input type="text" v-model="changePage">
-      </span>
-      <span
-        class="jump gobtn"
-        @click="jumpPage(changePage)">{{pagationLocales.go}}</span>
-    </div>
+  <div class="exam">
+    <el-container>
+      <el-header>
+        <i class="el-icon-arrow-left out-icon" @click="$emit('close')"></i>
+        <span class="header-name">{{ config.name }}</span>
+        <span class="header-time">07:23:35</span>
+        <el-button
+          plain
+          icon="el-icon-switch-button"
+          size="medium"
+          class="out-btn"
+          @click="$emit('close')"
+        >退出</el-button>
+      </el-header>
+      <el-container>
+        <el-main>
+          <div class="content">xxxx</div>
+        </el-main>
+      </el-container>
+    </el-container>
   </div>
 </template>
 
 <script>
-import pagationLocales from './locales'
-
 export default {
-  data () {
-    return {
-      changePage: '' // 跳转页
-    }
+  data() {
+    return {};
   },
   props: {
-    total: {
-      type: Number,
-      default: 10
-    },
-    perPage: {
-      type: Number,
-      default: 10
-    },
-    currentPage: {
-      type: Number,
-      default: 1
-    }
-  },
-  computed: {
-    pages () {
-      return Math.ceil(this.total / this.perPage)
-    },
-    show: function () {
-      return this.pages && this.pages != 1
-    },
-    efont: function () {
-      if (this.pages <= 7) return false
-      return this.currentPage > 5
-    },
-    indexs: function () {
-      var left = 1
-      var right = this.pages
-      var ar = []
-      if (this.pages >= 7) {
-        if (this.currentPage > 5 && this.currentPage < this.pages - 4) {
-          left = Number(this.currentPage) - 3
-          right = Number(this.currentPage) + 3
-        } else {
-          if (this.currentPage <= 5) {
-            left = 1
-            right = 7
-          } else {
-            right = this.pages
-
-            left = this.pages - 6
-          }
-        }
+    config: {
+      type: Object,
+      default: function() {
+        return {
+          name: "试卷名称",
+          singleNum: 25, // 单选题数
+          multipleNum: 25, // 多选题数
+          judgeNum: 25 // 判断题数
+        };
       }
-      while (left <= right) {
-        ar.push(left)
-        left++
-      }
-      return ar
-    },
-    pagationLocales () {
-      return pagationLocales(this)
-    }
-  },
-  methods: {
-    goPrev () {
-      let currentPage = this.currentPage
-      if (this.currentPage > 1) {
-        this.emit(--currentPage)
-      }
-    },
-    goNext () {
-      let currentPage = this.currentPage
-      if (currentPage < this.pages) {
-        this.emit(++currentPage)
-      }
-    },
-    jumpPage: function (id) {
-      const numId = parseInt(id)
-
-      if (numId <= this.pages && numId > 0) {
-        this.emit(numId)
-        return
-      }
-      alert(`请输入大于0，并且小于${this.pages}的页码！`)
-    },
-    emit (id) {
-      this.$emit('getCurrentPage', id)
     }
   }
-}
+};
 </script>
 
 <style lang="stylus" scoped>
+.el-header {
+  background: #ffffff;
+  height: 70px !important;
+  box-shadow: 0 2px 4px 0 rgba(153, 153, 153, 0.5);
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-.exam
-  font-weight: 700;
+  .header-name {
+    color: #27274a;
+    font-weight: 700;
+    font-family: monospace;
+    font-size: 1.5rem;
+  }
+
+  .out-icon, .header-time {
+    display: none;
+  }
+
+  .out-btn {
+    position: absolute;
+    right: 50px;
+    color: #1a8cfe;
+    border-color: #1a8cfe;
+  }
+}
+
+.el-main {
+  background-color: #eff3f7;
   text-align: center;
-  color: #888;
-  color: var(--text-color)
-  margin: 20px auto 0;
-  background: #f2f2f2;
-  background: var(--background-color);
-  .exam-list
-    font-size: 0;
-    line-height: 50px;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    span
-      font-size: 14px;
-      &.jump, &.jumpinp input
-        box-shadow: var(--box-shadow)
-        border 1px solid var(--border-color)!important
-        border: 1px solid #ccc;
-      &.jump
-        padding: 5px 8px;
-        -webkit-border-radius: 4px;
-        -moz-border-radius: 4px;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-left: 5px;
-      &.jumpinp
-        input
-          width: 55px;
-          height: 26px;
-          background-color: var(--background-color)
-          font-size: 13px;
-          -webkit-border-radius: 4px;
-          -moz-border-radius: 4px;
-          border-radius: 4px;
-          text-align: center;
-          outline none
-      &.bgprimary
-        cursor: default;
-        color: #fff;
-        background: $accentColor;
-        border-color: $accentColor;
-      &.ellipsis
-        padding: 0px 8px;
-      &.jumppoint
-        margin: 0 10px 0 30px;
+  height: calc(100vh - 70px);
+  padding: 20px 230px 80px 350px;
+
+  .content {
+    background: green;
+    height: 200vh;
+  }
+}
+
+@media (max-width: $MQMobile) {
+  .el-header {
+    background: #1a8cfe;
+    height: 45px !important;
+
+    .header-name, .out-btn {
+      display: none;
+    }
+
+    .header-time {
+      display: unset;
+      color: #ffffff;
+      font-size: 16px;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    .out-icon {
+      display: unset;
+      position: absolute;
+      left: 9px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+  }
+
+  .el-main {
+    padding: 0 10px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
 </style>
