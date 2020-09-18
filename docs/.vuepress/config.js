@@ -1,3 +1,5 @@
+const { path } = require('@vuepress/shared-utils')
+
 const themeConfig = require('./config/')
 const plugins = require('./config/plugins')
 
@@ -19,6 +21,11 @@ module.exports = {
   // define: {
   //   CURRENT_ENV: process.env.NODE_ENV,
   // },
+
+  // 配置项目根路径别名
+  alias: {
+    '@': path.resolve(__dirname, '../.vuepress'),
+  },
 
   // 主题设置
   theme: 'reco',

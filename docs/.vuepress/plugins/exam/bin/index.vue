@@ -119,9 +119,13 @@ export default {
     },
     examBegin(index) {
       const idx = this.currentPage * 10 - 10 + index;
-      this.config = this.examData[idx]
+      this.config = this.examData[idx];
       this.drawer = true;
     }
+  },
+  mounted() {
+    this.config = this.examData[0];
+    this.drawer = true;
   }
 };
 </script>

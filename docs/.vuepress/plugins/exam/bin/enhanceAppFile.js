@@ -1,5 +1,5 @@
-import Exam from './index.vue'
+import index from './index.vue'
 
 export default ({ Vue }) => {
-  Vue.component('Exam', Exam)
+  Vue.component('Exam', index)
 }
