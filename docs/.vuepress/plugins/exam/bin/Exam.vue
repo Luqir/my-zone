@@ -31,7 +31,7 @@
                     <div v-if="questions.length" :key="inx" class="card-content">
                       <div
                         class="card-content-title"
-                      >{{ questions[0].type|typeFilter }}(共{{ questions.length }}题，合计{{ questions[0].type|scoreFilter(score,questions.length) }}分)</div>
+                      >{{ questions[0].type | typeFilter }}(共{{ questions.length }}题)</div>
 
                       <div class="box-list">
                         <div
@@ -72,13 +72,9 @@
 </template>
 
 <script>
-import data from "../../../data/中级.json";
+import dynamicLoadScript from "./dynamicLoadScript";
+
 export default {
-  data() {
-    return {
-      list: [] // 题目list
-    };
-  },
   props: {
     config: {
       type: Object,
@@ -93,8 +89,50 @@ export default {
       }
     }
   },
-  created() {
-    console.log(data);
+  filters: {
+    typeFilter(type) {
+      if (type === 1) return "单选题";
+      else if (type === 2) return "多选题";
+      else if (type === 3) return "判断题";
+    }
+  },
+  data() {
+    return {
+      list: [[], [], []], // 初始题库->二维
+      listForPageArr: [], // 考卷显示题库->一维
+      listForPageArrBat: [], // 考试题库备份
+      totalLength: 0, // 总题目数
+      totalLengthForPage: 0 // 总题目数：用于查看错题时统计总题数
+    };
+  },
+  mounted() {
+    dynamicLoadScript("/exam-data/中级.js", err => {
+      if (err) {
+        this.$message.error(err.message);
+        return;
+      }
+      console.log(examList)
+    });
+  },
+  methods: {
+    init() {
+      // 遍历原题库将二维展开成一维
+      let totalLength = 0;
+      let typeTemp = 0;
+      let indexTemp = 0;
+      [].concat.apply([], this.list).filter((item, index) => {
+        if (typeTemp !== item.type) {
+          indexTemp = 0;
+          typeTemp = item.type;
+        }
+        item.indexForShow = ++indexTemp; // 显示题号
+        totalLength++;
+        item.indexForPage = index + 1; // 分页题号
+        this.listForPageArr.push(item);
+        this.listForPageArrBat.push(item);
+      });
+      this.totalLength = this.totalLengthForPage = totalLength;
+    }
   }
 };
 </script>

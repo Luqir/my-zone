@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import examData from "../../../data/examData";
+import examData from "@/data/examData";
 import ExamPage from "./Exam";
 
 export default {
@@ -118,6 +118,7 @@ export default {
       }, 100);
     },
     examBegin(index) {
+      // 默认每页10条
       const idx = this.currentPage * 10 - 10 + index;
       this.config = this.examData[idx];
       this.drawer = true;
@@ -125,7 +126,7 @@ export default {
   },
   mounted() {
     this.config = this.examData[0];
-    this.drawer = true;
+    this.drawer = false;
   }
 };
 </script>
