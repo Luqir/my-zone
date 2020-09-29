@@ -81,7 +81,7 @@
 
 <script>
 import examData from "@/data/examData";
-import ExamPage from "./Exam";
+import ExamPage from "./components/Exam";
 
 export default {
   components: { ExamPage },
