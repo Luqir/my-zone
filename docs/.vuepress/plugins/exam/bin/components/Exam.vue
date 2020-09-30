@@ -12,9 +12,26 @@
           class="out-btn"
           @click="$emit('close')"
         >退出</el-button>
+        <div class="header-icon">
+          <svg-icon icon-class="staro" />
+          <svg-icon icon-class="font" />
+          <svg-icon icon-class="answer-card" @click />
+        </div>
       </el-header>
       <el-container>
         <el-main>
+          <!-- 进度栏 -->
+          <div class="progress-bar">
+            <div class="progress-bar-top">
+              <div>单选题 (共200题)</div>
+              <div class="font">
+                <span>1</span>
+                <span>/{{totalLength}}</span>
+              </div>
+            </div>
+            <el-progress :percentage="50" :stroke-width="3" color="#1a8cfe" :show-text="false"></el-progress>
+          </div>
+          <!-- 试卷 -->
           <div class="content">
             <!-- 答题卡 -->
             <left :list="list"></left>
@@ -94,6 +111,10 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.out-icon, .header-time, .header-icon, .progress-bar {
+  display: none;
+}
+
 .el-header {
   background: #ffffff;
   height: 70px !important;
@@ -108,10 +129,6 @@ export default {
     font-weight: 700;
     font-family: monospace;
     font-size: 1.5rem;
-  }
-
-  .out-icon, .header-time {
-    display: none;
   }
 
   .out-btn {
@@ -141,6 +158,7 @@ export default {
   .el-header {
     background: #1a8cfe;
     height: 45px !important;
+    box-shadow: unset;
 
     .header-name, .out-btn {
       display: none;
@@ -161,6 +179,18 @@ export default {
       font-weight: 700;
       color: #ffffff;
     }
+
+    .header-icon {
+      display: unset;
+      position: absolute;
+      right: 10px;
+      color: #fff;
+      font-size: 20px;
+
+      svg+svg {
+        margin-left: 10px;
+      }
+    }
   }
 
   .el-main {
@@ -168,6 +198,40 @@ export default {
 
     &::-webkit-scrollbar {
       display: none;
+    }
+
+    .progress-bar {
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      margin: -10px -10px 10px;
+      height: 44px;
+
+      &-top {
+        display: flex;
+        justify-content: space-between;
+        padding: 11px 10px;
+        color: #666;
+        font-size: 14px;
+
+        .font {
+          font-weight: 500;
+          font-size: 0px;
+
+          span {
+            color: #1a8cfe;
+            font-size: 14px;
+
+            &:last-child {
+              color: #c1c1cb;
+            }
+          }
+        }
+      }
+
+      /deep/ .el-progress-bar__outer, /deep/ .el-progress-bar__inner {
+        border-radius: 0;
+      }
     }
   }
 }

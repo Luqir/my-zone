@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vuepress dev docs",
     "build": "vuepress build docs",
-    "deploy": "bash deploy.sh"
+    "deploy": "bash deploy.sh",
+    "svgo": "svgo -f ./docs/.vuepress/public/icons --config=./docs/.vuepress/plugins/svg-icon/bin/svgo.yml"
   },
   "devDependencies": {
     "vuepress": "1.5.3",
