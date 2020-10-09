@@ -1,16 +1,16 @@
 <template>
-  <div class="exam">
+  <div class="exam" v-if="hackReset" ref="exam">
     <el-container>
       <el-header>
-        <i class="el-icon-arrow-left out-icon" @click="$emit('close')"></i>
+        <i class="el-icon-arrow-left out-icon" @click="closeFun"></i>
         <span class="header-name">{{ config.name }}</span>
-        <span class="header-time">07:23:35</span>
+        <span class="header-time">{{ timeUse | timeFormat }}</span>
         <el-button
           plain
           icon="el-icon-switch-button"
           size="medium"
           class="out-btn"
-          @click="$emit('close')"
+          @click="closeFun"
         >退出</el-button>
         <div class="header-icon">
           <svg-icon icon-class="staro" />
@@ -60,7 +60,7 @@
                         >
                           <span :ref="'box'+ques.id">
                             {{ ques.indexForShow }}
-                            <svg-icon icon-class="star" hidden />
+                            <svg-icon icon-class="star" />
                           </span>
                         </div>
                       </div>
@@ -142,9 +142,8 @@
                                 v-if="ques.type===3&&number===2"
                                 icon-class="error"
                                 class="icon-error"
-                                hidden
                               />
-                              <svg-icon v-else icon-class="correct" hidden />
+                              <svg-icon v-else icon-class="correct" />
                             </span>
                             <span v-if="ques.type!==3" class="words">
                               <span class="words-option">{{ String.fromCharCode(64+number) }}.</span>
@@ -289,7 +288,7 @@
       </el-container>
     </el-container>
 
-    <el-dialog :visible.sync="noticeSubmit" width="440px" center>
+    <el-dialog :visible.sync="noticeSubmit" width="440px" center append-to-body>
       <span class="dialog-title">{{ submitNoticeText }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="noticeSubmit=false">取 消</el-button>
@@ -297,7 +296,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="editSubmit" width="440px" center>
+    <el-dialog :visible.sync="editSubmit" width="440px" center append-to-body>
       <span class="dialog-title">是否放弃当前试卷重新选择？</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editSubmit=false">取 消</el-button>
@@ -305,7 +304,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="redoVisible" width="440px" center>
+    <el-dialog :visible.sync="redoVisible" width="440px" center append-to-body>
       <span class="dialog-title">重做错题？</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="redoVisible=false">取 消</el-button>
@@ -362,7 +361,7 @@ export default {
       submitNoticeText: "",
       filterAnswerText: "全部",
       selectStyle: { "pointer-events": "unset" },
-      examBool: true, // 考试->true,练习->false
+      examBool: false, // 考试->true,练习->false
       optionsBool: false, // 选项是否乱序
       editSubmit: false,
       redoBool: false,
@@ -399,6 +398,44 @@ export default {
     }
   },
   created() {
+    dynamicLoadScript("/exam-data/中级.js", err => {
+      if (err) {
+        this.$message.error(err.message);
+        return;
+      }
+
+      let tempArr = [[], [], []];
+      examList.map(item => {
+        tempArr[item.type - 1].push(item);
+      });
+
+      if (
+        this.config.singleTotal !== 0 &&
+        this.config.singleTotal > this.config.singleNum
+      ) {
+        this.shuffle(tempArr[0]); // 乱序数组
+        tempArr[0] = tempArr[0].slice(0, this.config.singleNum); // 截取用户需要的题目数量
+      }
+      if (
+        this.config.multipleTotal !== 0 &&
+        this.config.multipleTotal > this.config.multipleNum
+      ) {
+        this.shuffle(tempArr[1]); // 乱序数组
+        tempArr[0] = tempArr[0].slice(0, this.config.multipleNum); // 截取用户需要的题目数量
+      }
+      if (
+        this.config.judgeTotal !== 0 &&
+        this.config.judgeTotal > this.config.judgeNum
+      ) {
+        this.shuffle(tempArr[2]); // 乱序数组
+        tempArr[0] = tempArr[0].slice(0, this.config.judgeNum); // 截取用户需要的题目数量
+      }
+
+      this.list = tempArr;
+
+      this.status = 1;
+    });
+
     this.$nextTick(() => {
       // 禁用右键
       document.oncontextmenu = () => {
@@ -417,37 +454,8 @@ export default {
       };
     });
   },
-  mounted() {
-    dynamicLoadScript("/exam-data/中级.js", err => {
-      if (err) {
-        this.$message.error(err.message);
-        return;
-      }
-      let tempArr = [[], [], []];
-      examList.map(item => {
-        tempArr[item.type - 1].push(item);
-      });
-      this.list = tempArr;
-      this.init();
-    });
-  },
   beforeDestroy() {
     this.status = 0;
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.status === 1) {
-      this.$confirm("确定离开当前页面？", "", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          next();
-        })
-        .catch(() => {
-          next(false);
-        });
-    }
   },
   computed: {
     listForPage() {
@@ -497,7 +505,6 @@ export default {
 
         // 是否重做错题
         if (!this.redoBool) {
-          this.list = [];
           this.init();
         } else {
           // 遍历原题库将二维展开成一维
@@ -515,12 +522,8 @@ export default {
             this.listForPageArr.push(item);
             this.listForPageArrBat.push(item);
           });
-          this.totalLength = totalLength;
-          this.totalLengthForPage = totalLength;
+          this.totalLength = this.totalLengthForPage = totalLength;
         }
-
-        // 开始考试即即开监听关闭事件
-        window.addEventListener("beforeunload", this.beforeunloadFn, false);
 
         if (this.timeUse === 0) {
           // 开启时钟
@@ -885,17 +888,6 @@ export default {
       this.selectStyle["pointer-events"] = "none";
       // 关闭计时器
       clearInterval(this.timer);
-      // 交卷了就不再监听关闭事件
-      window.removeEventListener("beforeunload", this.beforeunloadFn, false);
-    },
-    beforeunloadFn(e) {
-      if (typeof e.returnValue !== "undefined") {
-        // Chrome requires returnValue to be set.
-        e.returnValue = "确定要关闭窗口吗？";
-      } else {
-        // Cancel the event as stated by the standard.
-        e.preventDefault();
-      }
     },
     editFn() {
       this.status = 0;
@@ -1006,6 +998,36 @@ export default {
           }
         }
       }
+    },
+    closeFun() {
+      if (this.status === 1) {
+        this.$confirm("确定离开当前页面？", "", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            this.$emit("close");
+          })
+          .catch(() => {
+            return false;
+          });
+      } else {
+        this.$emit("close");
+      }
+    },
+    /**
+     * @description 数组乱序——Fisher–Yates shuffle 洗牌算法
+     * @param {array} arr 要乱序的数组
+     */
+    shuffle(arr) {
+      if (arr.length === 1) return arr;
+      const len = arr.length;
+      for (let i = len - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
     }
   }
 };
@@ -1014,6 +1036,14 @@ export default {
 <style lang="stylus" scoped>
 .out-icon, .header-time, .header-icon, .progress-bar {
   display: none;
+}
+
+html {
+  overflow: hidden;
+}
+
+.exam {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 /deep/ .exam-question p, /deep/ .answers p, /deep/ .analysis p {
@@ -1069,7 +1099,11 @@ export default {
   padding: 20px 230px 80px 350px;
 
   &::-webkit-scrollbar-thumb {
-    background: #1a8cfe;
+    background: #dcdfe6;
+
+    &:hover {
+      background: #1a8cfe;
+    }
   }
 
   .left {
@@ -1120,7 +1154,11 @@ export default {
       overflow: auto;
 
       &::-webkit-scrollbar-thumb {
-        background: #1a8cfe;
+        background: #dcdfe6;
+
+        &:hover {
+          background: #1a8cfe;
+        }
       }
 
       &-content {
@@ -1157,7 +1195,6 @@ export default {
         text-align: center;
         width: 30px;
         height: 33px;
-        padding-bottom: 15px;
         line-height: 18px;
         position: relative;
         margin: 0 2px 2px;
@@ -1186,6 +1223,7 @@ export default {
             top: -4px;
             right: -4px;
             color: #ff962a;
+            display: none;
           }
 
           &:hover, &.checked {
@@ -1265,7 +1303,7 @@ export default {
     &-top {
       color: #27274a;
       line-height: 20px;
-      width: 100%;
+      width: 100px;
       padding: 0 10px;
       background: #ffffff;
       box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
@@ -1280,7 +1318,8 @@ export default {
 
         & > li {
           padding: 14px 0;
-          height: 69px;
+          height: 40px;
+          line-height: 20px;
         }
       }
 
@@ -1552,6 +1591,7 @@ export default {
         color: #c1c1cb;
         width: 19px;
         height: 19px;
+        display: none;
 
         &.icon-error {
           left: -2.5px;
@@ -1574,28 +1614,6 @@ export default {
         left: -20px;
       }
     }
-  }
-
-  /deep/ .el-dialog {
-    .el-dialog__body {
-      text-align: center;
-      color: #666;
-      font-size: 22px;
-    }
-
-    .el-button {
-      width: 100px;
-    }
-  }
-
-  .el-dropdown-link {
-    cursor: pointer;
-    color: #409eff;
-    margin-left: 4px;
-  }
-
-  .el-icon-arrow-down {
-    font-size: 12px;
   }
 
   .analysis {
@@ -1636,7 +1654,7 @@ export default {
       line-height: 28px;
       text-align: center;
       font-style: normal;
-      cursor: pointer;
+      cursor: default;
       width: 100%;
 
       &-error {
@@ -1652,10 +1670,6 @@ export default {
       min-height: 24px;
       padding-left: 70px;
       position: relative;
-
-      & + & {
-        margin-top: 10px;
-      }
     }
 
     &-title {
@@ -1677,13 +1691,39 @@ export default {
     }
   }
 
-  .pagation {
-    margin: 20px auto;
+  .analysis-row + .analysis-row {
+    margin-top: 10px;
+  }
+}
 
-    /deep/ & .pagation-list span.bgprimary {
-      background: #1a8cfe;
-      border-color: #1a8cfe;
-    }
+/deep/ .el-dialog {
+  .el-dialog__body {
+    text-align: center;
+    color: #666;
+    font-size: 22px;
+  }
+
+  .el-button {
+    width: 100px;
+  }
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+  margin-left: 4px;
+}
+
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+
+.pagation {
+  margin: 20px auto;
+
+  /deep/ & .pagation-list span.bgprimary {
+    background: #1a8cfe;
+    border-color: #1a8cfe;
   }
 }
 

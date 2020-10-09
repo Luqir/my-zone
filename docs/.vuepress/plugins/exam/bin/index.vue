@@ -15,7 +15,7 @@
                 class="input-num"
                 min="0"
                 :max="exam.singleTotal"
-                v-model="examData[exam.index].singleNum"
+                v-model.number="examData[exam.index].singleNum"
               />
               / {{ exam.singleTotal }}
             </span>
@@ -26,7 +26,7 @@
                 class="input-num"
                 min="0"
                 :max="exam.multipleTotal"
-                v-model="examData[exam.index].multipleNum"
+                v-model.number="examData[exam.index].multipleNum"
               />
               / {{ exam.multipleTotal }}
             </span>
@@ -37,7 +37,7 @@
                 class="input-num"
                 min="0"
                 :max="exam.judgeTotal"
-                v-model="examData[exam.index].judgeNum"
+                v-model.number="examData[exam.index].judgeNum"
               />
               / {{ exam.judgeTotal }}
             </span>
@@ -124,10 +124,6 @@ export default {
       this.drawer = true;
     }
   },
-  mounted() {
-    this.config = this.examData[0];
-    this.drawer = false;
-  }
 };
 </script>
 
