@@ -74,7 +74,7 @@
       size="100%"
       append-to-body
     >
-      <ExamPage :config="config" @close="drawer=false"></ExamPage>
+      <ExamPage :config="config" @close="drawerClose" v-if="drawer"></ExamPage>
     </el-drawer>
   </div>
 </template>
@@ -122,8 +122,11 @@ export default {
       const idx = this.currentPage * 10 - 10 + index;
       this.config = this.examData[idx];
       this.drawer = true;
+    },
+    drawerClose() {
+      this.drawer = false;
     }
-  },
+  }
 };
 </script>
 

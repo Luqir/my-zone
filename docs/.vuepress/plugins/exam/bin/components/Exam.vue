@@ -1,5 +1,10 @@
 <template>
-  <div class="exam" v-if="hackReset" ref="exam">
+  <div
+    class="exam"
+    v-if="hackReset"
+    ref="exam"
+    :style="{backgroundImage:`url(${require('@/public/images/exam.jpg')})`}"
+  >
     <el-container>
       <el-header>
         <i class="el-icon-arrow-left out-icon" @click="closeFun"></i>
@@ -368,6 +373,7 @@ export default {
       hackReset: true,
       redoVisible: false,
       list: [[], [], []], // 初始题库->二维
+      listBat: [],
       listForPageArr: [], // 考卷显示题库->一维
       listForPageArrBat: [], // 考试题库备份
       pageQuery: {
@@ -409,29 +415,10 @@ export default {
         tempArr[item.type - 1].push(item);
       });
 
-      if (
-        this.config.singleTotal !== 0 &&
-        this.config.singleTotal > this.config.singleNum
-      ) {
-        this.shuffle(tempArr[0]); // 乱序数组
-        tempArr[0] = tempArr[0].slice(0, this.config.singleNum); // 截取用户需要的题目数量
-      }
-      if (
-        this.config.multipleTotal !== 0 &&
-        this.config.multipleTotal > this.config.multipleNum
-      ) {
-        this.shuffle(tempArr[1]); // 乱序数组
-        tempArr[0] = tempArr[0].slice(0, this.config.multipleNum); // 截取用户需要的题目数量
-      }
-      if (
-        this.config.judgeTotal !== 0 &&
-        this.config.judgeTotal > this.config.judgeNum
-      ) {
-        this.shuffle(tempArr[2]); // 乱序数组
-        tempArr[0] = tempArr[0].slice(0, this.config.judgeNum); // 截取用户需要的题目数量
-      }
-
-      this.list = tempArr;
+      // 克隆数组做备份
+      this.listBat = [...tempArr];
+      // 截取数组中的随机元素
+      this.list = this.shuffleFun(tempArr);
 
       this.status = 1;
     });
@@ -505,24 +492,12 @@ export default {
 
         // 是否重做错题
         if (!this.redoBool) {
+          // 截取数组中的随机元素
+          this.list = this.shuffleFun([...this.listBat]);
+
           this.init();
         } else {
-          // 遍历原题库将二维展开成一维
-          let totalLength = 0;
-          let typeTemp = 0;
-          let indexTemp = 0;
-          [].concat.apply([], this.list).filter((item, index) => {
-            if (typeTemp !== item.type) {
-              indexTemp = 0;
-              typeTemp = item.type;
-            }
-            item.indexForShow = ++indexTemp;
-            totalLength++;
-            item.indexForPage = index + 1; // 分页题号
-            this.listForPageArr.push(item);
-            this.listForPageArrBat.push(item);
-          });
-          this.totalLength = this.totalLengthForPage = totalLength;
+          this.init();
         }
 
         if (this.timeUse === 0) {
@@ -582,6 +557,13 @@ export default {
         this.status = 1;
       });
     },
+    cloneObj(obj) {
+      var newObj = {};
+      for (var prop in obj) {
+        newObj[prop] = obj[prop];
+      }
+      return newObj;
+    },
     // 阅卷
     review() {
       this.status = 2;
@@ -597,7 +579,8 @@ export default {
         index < len;
         index++
       ) {
-        const item = this.listForPageArrBat[index];
+        const item = this.listForPageArrBat[index]
+        // const item = this.cloneObj(this.listForPageArrBat[index]); // 对象拷贝
         if (
           this.answerArr[item.id] &&
           this.answerArr[item.id] === item.answer
@@ -670,17 +653,14 @@ export default {
             const element = inputArr[i];
             if (element.checked) {
               keyAnswer = element.id.charAt(0);
-              element.nextElementSibling.firstElementChild.firstElementChild.removeAttribute(
-                "hidden"
-              );
+              element.nextElementSibling.firstElementChild.firstElementChild.style.display =
+                "unset";
               // 防bug 有时候获取不到:checked
               element.classList.add("checked");
             } else {
               // 判断题就一直显示
-              element.nextElementSibling.firstElementChild.firstElementChild.setAttribute(
-                "hidden",
-                "hidden"
-              );
+              element.nextElementSibling.firstElementChild.firstElementChild.style.display =
+                "none";
               element.classList.remove("checked");
             }
           }
@@ -689,16 +669,13 @@ export default {
             const element = inputArr[i];
             if (element.checked) {
               keyAnswer += element.id.charAt();
-              element.nextElementSibling.firstElementChild.firstElementChild.removeAttribute(
-                "hidden"
-              );
+              element.nextElementSibling.firstElementChild.firstElementChild.style.display =
+                "unset";
               // 防bug 有时候获取不到:checked
               element.classList.add("checked");
             } else {
-              element.nextElementSibling.firstElementChild.firstElementChild.setAttribute(
-                "hidden",
-                "hidden"
-              );
+              element.nextElementSibling.firstElementChild.firstElementChild.style.display =
+                "none";
               element.classList.remove("checked");
             }
           }
@@ -736,9 +713,8 @@ export default {
       // 防bug 有时候获取不到:checked
       answerNode.classList.add("checked");
       // input->label->span->svg
-      answerNode.nextElementSibling.firstElementChild.firstElementChild.removeAttribute(
-        "hidden"
-      );
+      answerNode.nextElementSibling.firstElementChild.firstElementChild.style.display =
+        "unset";
       // 原错误答案红色显示（未答不显示红色）
       if (keyAnswer !== "" && keyAnswer !== correrAnswer) {
         // input->label
@@ -746,10 +722,7 @@ export default {
           .nextElementSibling;
         labelNode.classList.add("wrong");
         // label->span->svg 隐藏错误答案的勾
-        labelNode.firstElementChild.firstElementChild.setAttribute(
-          "hidden",
-          "hidden"
-        );
+        labelNode.firstElementChild.firstElementChild.style.display = "none";
       }
       // 答完以后就不能再点击了
       this.$refs["answer" + questionsId][0].style["pointer-events"] = "none";
@@ -844,17 +817,14 @@ export default {
       if (event.currentTarget.className === "sign") {
         this.signIdArr.push(id);
         event.currentTarget.className = "sign checked";
-        this.$refs["box" + id][0].firstElementChild.removeAttribute("hidden");
+        this.$refs["box" + id][0].firstElementChild.style.display = "unset";
       } else {
         const index = this.signIdArr.indexOf(id);
         if (index > -1) {
           this.signIdArr.splice(index, 1);
         }
         event.currentTarget.className = "sign";
-        this.$refs["box" + id][0].firstElementChild.setAttribute(
-          "hidden",
-          "hidden"
-        );
+        this.$refs["box" + id][0].firstElementChild.style.display = "none";
       }
     },
     // 检测问题有几个选项(以第4个为准比较快,数据库共6个选项)
@@ -928,9 +898,8 @@ export default {
               // 防bug 有时候获取不到:checked
               answerNode.classList.add("checked");
               // input->label->span->svg
-              answerNode.nextElementSibling.firstElementChild.firstElementChild.removeAttribute(
-                "hidden"
-              );
+              answerNode.nextElementSibling.firstElementChild.firstElementChild.style.display =
+                "unset";
             }
           } else {
             // 当前试题中answers节点下的所有input选项
@@ -944,9 +913,8 @@ export default {
               const char = answerCharArr[j];
               inputArr[
                 char.charCodeAt(0) - 97
-              ].nextElementSibling.firstElementChild.firstElementChild.removeAttribute(
-                "hidden"
-              );
+              ].nextElementSibling.firstElementChild.firstElementChild.style.display =
+                "unset";
               inputArr[char.charCodeAt(0) - 97].checked = "checked";
             }
           }
@@ -969,9 +937,8 @@ export default {
               answerNode.setAttribute("checked", "checked");
               // 防bug 有时候获取不到:checked
               answerNode.classList.add("checked");
-              answerNode.nextElementSibling.firstElementChild.firstElementChild.removeAttribute(
-                "hidden"
-              );
+              answerNode.nextElementSibling.firstElementChild.firstElementChild.style.display =
+                "unset";
             });
 
             // 原错误答案红色显示（未答不显示红色）
@@ -987,10 +954,8 @@ export default {
                       .nextElementSibling;
                     labelNode.classList.add("wrong");
                     // label->span->svg 隐藏错误答案的勾
-                    labelNode.firstElementChild.firstElementChild.setAttribute(
-                      "hidden",
-                      "hidden"
-                    );
+                    labelNode.firstElementChild.firstElementChild.style.display =
+                      "none";
                   }
                 });
               }
@@ -1028,6 +993,31 @@ export default {
         [arr[i], arr[j]] = [arr[j], arr[i]];
       }
       return arr;
+    },
+    // 再考一次时需要重新截取数组 arr：[[],[],[]]
+    shuffleFun(arr) {
+      if (
+        this.config.singleTotal !== 0 &&
+        this.config.singleTotal > this.config.singleNum
+      ) {
+        this.shuffle(arr[0]); // 乱序数组
+        arr[0] = arr[0].slice(0, this.config.singleNum); // 截取用户需要的题目数量
+      }
+      if (
+        this.config.multipleTotal !== 0 &&
+        this.config.multipleTotal > this.config.multipleNum
+      ) {
+        this.shuffle(arr[1]); // 乱序数组
+        arr[1] = arr[1].slice(0, this.config.multipleNum); // 截取用户需要的题目数量
+      }
+      if (
+        this.config.judgeTotal !== 0 &&
+        this.config.judgeTotal > this.config.judgeNum
+      ) {
+        this.shuffle(arr[2]); // 乱序数组
+        arr[2] = arr[2].slice(0, this.config.judgeNum); // 截取用户需要的题目数量
+      }
+      return arr;
     }
   }
 };
@@ -1044,6 +1034,7 @@ html {
 
 .exam {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-size: 100% 100%;
 }
 
 /deep/ .exam-question p, /deep/ .answers p, /deep/ .analysis p {
@@ -1094,7 +1085,6 @@ html {
 }
 
 .el-main {
-  background-color: #eff3f7;
   height: calc(100vh - 70px);
   padding: 20px 230px 80px 350px;
 
@@ -1767,6 +1757,7 @@ html {
   }
 
   .el-main {
+    background-color: #eff3f7;
     padding: 10px 10px;
 
     &::-webkit-scrollbar {
