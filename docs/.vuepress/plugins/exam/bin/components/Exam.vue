@@ -2,7 +2,6 @@
   <div
     class="exam"
     v-if="hackReset"
-    ref="exam"
     :style="{backgroundImage:`url(${require('@/public/images/exam.jpg')})`}"
   >
     <el-container>
@@ -24,7 +23,7 @@
         </div>
       </el-header>
       <el-container>
-        <el-main>
+        <el-main id="el-main">
           <!-- 进度栏 -->
           <div class="progress-bar">
             <div class="progress-bar-top">
@@ -204,12 +203,12 @@
                 </div>
               </template>
 
-              <Pagation
+              <pagation
                 v-if="totalLength>0"
                 :total="totalLengthForPage"
                 :currentPage="pageQuery.page"
                 :perPage="pageQuery.limit"
-                @pagination="pageFun"
+                @getCurrentPage="getCurrentPage"
               />
 
               <div class="support">
@@ -328,16 +327,16 @@ export default {
   props: {
     config: {
       type: Object,
-      default: function() {
+      default: function () {
         return {
           name: "试卷名称",
           singleNum: 25, // 单选题数
           multipleNum: 25, // 多选题数
           judgeNum: 25, // 判断题数
-          path: "" // 题库名称
+          path: "", // 题库名称
         };
-      }
-    }
+      },
+    },
   },
   data() {
     return {
@@ -351,7 +350,7 @@ export default {
         name: "",
         singleNum: 25, // 抽取25题单选题
         multipleNum: 25, // 抽取0题多选题
-        judgeNum: 25 // 抽取25题判断题
+        judgeNum: 25, // 抽取25题判断题
       },
       percentScore: 0, // 正确率
       judgeShow: ["正确", "错误"],
@@ -378,9 +377,9 @@ export default {
       listForPageArrBat: [], // 考试题库备份
       pageQuery: {
         page: 1,
-        limit: 25
+        limit: 25,
       },
-      signIdArr: []
+      signIdArr: [],
     };
   },
   filters: {
@@ -401,17 +400,17 @@ export default {
       if (type === 1) return "单选题";
       else if (type === 2) return "多选题";
       else if (type === 3) return "判断题";
-    }
+    },
   },
   created() {
-    dynamicLoadScript("/exam-data/中级.js", err => {
+    dynamicLoadScript("/exam-data/中级.js", (err) => {
       if (err) {
         this.$message.error(err.message);
         return;
       }
 
       let tempArr = [[], [], []];
-      examList.map(item => {
+      examList.map((item) => {
         tempArr[item.type - 1].push(item);
       });
 
@@ -466,12 +465,12 @@ export default {
       }
 
       return tempArr;
-    }
+    },
   },
   watch: {
     commitLength(newLen, oldLen) {
       this.progressStyle = {
-        width: (newLen / this.totalLength) * 100 + "%"
+        width: (newLen / this.totalLength) * 100 + "%",
       };
     },
     status(newValue, oldValue) {
@@ -516,7 +515,7 @@ export default {
         // 初始状态
         this.clearStatus();
       }
-    }
+    },
   },
   methods: {
     init() {
@@ -579,7 +578,7 @@ export default {
         index < len;
         index++
       ) {
-        const item = this.listForPageArrBat[index]
+        const item = this.listForPageArrBat[index];
         // const item = this.cloneObj(this.listForPageArrBat[index]); // 对象拷贝
         if (
           this.answerArr[item.id] &&
@@ -751,7 +750,7 @@ export default {
         this.$refs["box" + id][0].classList.remove("checked");
       }
       let temp = 0;
-      this.answerArr.map(item => {
+      this.answerArr.map((item) => {
         if (item) temp++;
       });
       this.commitLength = temp;
@@ -782,12 +781,12 @@ export default {
     },
     // 答对->错题不显示且不可跳转
     displayFun(rightAnswerPoint, wrongAnswerPoint) {
-      this.rightAnswerArr.map(item => {
+      this.rightAnswerArr.map((item) => {
         this.$refs["box" + item.id][0].parentElement.style[
           "pointer-events"
         ] = rightAnswerPoint;
       });
-      this.wrongAnswerArr.map(item => {
+      this.wrongAnswerArr.map((item) => {
         this.$refs["box" + item.id][0].parentElement.style[
           "pointer-events"
         ] = wrongAnswerPoint;
@@ -845,12 +844,10 @@ export default {
         this.pageQuery.page = tempPage;
         this.$nextTick(() => {
           this.pageFun();
-          this.$refs["id" + id][0].scrollIntoView(true); // 顶部对齐，顶端需要-70px
-          this.$refs.exam.scrollTop = this.$refs.exam.scrollTop - 70;
+          this.$refs["id" + id][0].scrollIntoView(true); // 顶部对齐
         });
       } else {
-        this.$refs["id" + id][0].scrollIntoView(true); // 顶部对齐，顶端需要-70px
-        this.$refs.exam.scrollTop = this.$refs.exam.scrollTop - 70;
+        this.$refs["id" + id][0].scrollIntoView(true); // 顶部对齐
       }
     },
     clearStatus() {
@@ -865,11 +862,11 @@ export default {
       this.editSubmit = false;
     },
     pageFun() {
-      this.$refs.exam.scrollTop = 0;
+      document.getElementById("el-main").scrollTop = 0;
 
       // 将当前分页的二维数组展开成一维
       const tempArr = [];
-      [].concat.apply([], this.listForPage).filter(item => {
+      [].concat.apply([], this.listForPage).filter((item) => {
         tempArr.push(item);
       });
       // 将用户选择过的选项填回对应选项中
@@ -932,7 +929,7 @@ export default {
               .getElementById("rightAnswer" + ele.id)
               .getAttribute("answer");
 
-            correrAnswer.split("").map(answer => {
+            correrAnswer.split("").map((answer) => {
               const answerNode = document.getElementById(answer + ele.id);
               answerNode.setAttribute("checked", "checked");
               // 防bug 有时候获取不到:checked
@@ -946,7 +943,7 @@ export default {
               // 解析框变红
               this.$refs["analysis" + ele.id][0].classList.add("wrong");
               if (this.answerArr[ele.id]) {
-                this.answerArr[ele.id].split("").map(val => {
+                this.answerArr[ele.id].split("").map((val) => {
                   // 如果是多选之一则不动作
                   if (correrAnswer.indexOf(val) === -1) {
                     // input->label
@@ -964,12 +961,18 @@ export default {
         }
       }
     },
+    getCurrentPage(currentPage) {
+      this.pageQuery.page = currentPage;
+      this.$nextTick(() => {
+        this.pageFun();
+      });
+    },
     closeFun() {
       if (this.status === 1) {
         this.$confirm("确定离开当前页面？", "", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         })
           .then(() => {
             this.$emit("close");
@@ -1018,8 +1021,8 @@ export default {
         arr[2] = arr[2].slice(0, this.config.judgeNum); // 截取用户需要的题目数量
       }
       return arr;
-    }
-  }
+    },
+  },
 };
 </script>
 
