@@ -214,6 +214,10 @@ export default {
   }
 }
 
+/deep/ .el-drawer:focus {
+  outline: none; 
+}
+
 @media (max-width: $MQMobile) {
   .exam-list {
     .exam-list-wrapper {
