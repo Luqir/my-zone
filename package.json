@@ -9,10 +9,11 @@
     "svgo": "svgo -f ./docs/.vuepress/public/icons --config=./docs/.vuepress/plugins/svg-icon/bin/svgo.yml"
   },
   "devDependencies": {
-    "vuepress": "1.5.3",
-    "vuepress-theme-reco": "1.5.5",
+    "@vuepress/plugin-pwa": "^1.6.0",
     "svg-sprite-loader": "4.1.3",
-    "svgo": "1.2.0"
+    "svgo": "1.2.0",
+    "vuepress": "1.5.3",
+    "vuepress-theme-reco": "1.5.5"
   },
   "dependencies": {
     "element-ui": "^2.13.2",

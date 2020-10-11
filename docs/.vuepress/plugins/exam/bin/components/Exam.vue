@@ -1103,6 +1103,12 @@ html {
   height: calc(100vh - 70px);
   padding: 20px 230px 80px 350px;
 
+  .content{
+    margin: unset;
+    max-width: unset;
+    padding: unset;
+  }
+
   &::-webkit-scrollbar-thumb {
     background: #dcdfe6;
 
