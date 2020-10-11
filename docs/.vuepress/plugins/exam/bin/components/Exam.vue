@@ -320,6 +320,7 @@
 
 <script>
 import dynamicLoadScript from "./dynamicLoadScript";
+import { deepClone } from "@/helpers/utils.js";
 // import Left from "./Left";
 
 export default {
@@ -372,7 +373,8 @@ export default {
       hackReset: true,
       redoVisible: false,
       list: [[], [], []], // 初始题库->二维
-      listBat: [],
+      listBat: [[], [], []], // 初始题库备份
+      examList: [], // 所有题库
       listForPageArr: [], // 考卷显示题库->一维
       listForPageArrBat: [], // 考试题库备份
       pageQuery: {
@@ -415,10 +417,8 @@ export default {
       });
 
       // 克隆数组做备份
-      this.listBat = [...tempArr];
-      // 截取数组中的随机元素
-      this.list = this.shuffleFun(tempArr);
-
+      this.examList = [...tempArr];
+      
       this.status = 1;
     });
 
@@ -489,11 +489,10 @@ export default {
         this.signIdArr = [];
         this.pageQuery.page = 1;
 
-        // 是否重做错题
+        // 是否重做错题(不是则随机抽题组卷)
         if (!this.redoBool) {
           // 截取数组中的随机元素
-          this.list = this.shuffleFun([...this.listBat]);
-
+          this.list = this.shuffleFun([...this.examList]);
           this.init();
         } else {
           this.init();
@@ -534,6 +533,8 @@ export default {
         this.listForPageArr.push(item);
         this.listForPageArrBat.push(item);
       });
+      // 备份二维题库，以便在筛选题库选 全部 时回填
+      this.listBat = deepClone(this.list);
       this.totalLength = this.totalLengthForPage = totalLength;
     },
     redoVisibleFun() {
@@ -556,13 +557,6 @@ export default {
         this.status = 1;
       });
     },
-    cloneObj(obj) {
-      var newObj = {};
-      for (var prop in obj) {
-        newObj[prop] = obj[prop];
-      }
-      return newObj;
-    },
     // 阅卷
     review() {
       this.status = 2;
@@ -578,8 +572,8 @@ export default {
         index < len;
         index++
       ) {
-        const item = this.listForPageArrBat[index];
-        // const item = this.cloneObj(this.listForPageArrBat[index]); // 对象拷贝
+        const item = deepClone(this.listForPageArrBat[index]); // 对象拷贝
+
         if (
           this.answerArr[item.id] &&
           this.answerArr[item.id] === item.answer
@@ -764,15 +758,33 @@ export default {
         if (command === "wrong") {
           this.filterAnswerText = "答错";
           this.listForPageArr = this.wrongAnswerArr;
-          this.displayFun("none", "unset");
+          this.displayFun("none", "inline-block");
+
+          // 筛选试题之后要把 list 里面用于展示的数值改变
+          this.wrongAnswerArr.map((item) => {
+            this.list[item.type - 1][item.indexForShow - 1].indexForPage =
+              item.indexForPage;
+          });
+          this.getCurrentPage(1);
         } else if (command === "right") {
           this.filterAnswerText = "答对";
           this.listForPageArr = this.rightAnswerArr;
-          this.displayFun("unset", "none");
+          this.displayFun("inline-block", "none");
+
+          // 筛选试题之后要把 list 里面用于展示的数值改变
+          this.rightAnswerArr.map((item) => {
+            this.list[item.type - 1][item.indexForShow - 1].indexForPage =
+              item.indexForPage;
+          });
+          this.getCurrentPage(1);
         } else {
           this.filterAnswerText = "全部";
           this.listForPageArr = this.listForPageArrBat;
-          this.displayFun("unset", "unset");
+          this.displayFun("inline-block", "inline-block");
+
+          // 筛选试题之后要把 list 里面用于展示的数值改变
+          this.list = this.listBat;
+          this.getCurrentPage(1);
         }
         this.totalLengthForPage = this.listForPageArr.length;
         // 回填用户选择的选项
@@ -783,12 +795,12 @@ export default {
     displayFun(rightAnswerPoint, wrongAnswerPoint) {
       this.rightAnswerArr.map((item) => {
         this.$refs["box" + item.id][0].parentElement.style[
-          "pointer-events"
+          "display"
         ] = rightAnswerPoint;
       });
       this.wrongAnswerArr.map((item) => {
         this.$refs["box" + item.id][0].parentElement.style[
-          "pointer-events"
+          "display"
         ] = wrongAnswerPoint;
       });
     },
