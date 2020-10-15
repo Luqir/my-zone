@@ -80,28 +80,41 @@
 </template>
 
 <script>
-import examData from "@/data/examData";
+// import examData from "@/data/examData";
 import ExamPage from "./components/Exam";
 
 export default {
   components: { ExamPage },
   data() {
     return {
-      examData,
+      examData: [],
       currentPage: 1,
       config: {},
-      drawer: false
+      drawer: false,
     };
   },
-  created() {
+  async created() {
+    // 匿名登录
+    await this.$cloudbase
+      .auth({ persistence: "local" })
+      .anonymousAuthProvider()
+      .signIn();
+    // 数据库查询
+    const queryResult = await this.$cloudbase
+      .database()
+      .collection("exam_subject")
+      .where({})
+      .get();
+    this.examData = queryResult.data;
+
     // 添加试卷对应题型数量
-    for (let i = 0, len = this.examData.length; i < len; i++) {
-      const ele = this.examData[i];
-      ele.index = i;
-      ele.singleNum = 25;
-      ele.multipleNum = 25;
-      ele.judgeNum = 25;
-    }
+    // for (let i = 0, len = this.examData.length; i < len; i++) {
+    //   const ele = this.examData[i];
+    //   ele.index = i;
+    //   ele.singleNum = 25;
+    //   ele.multipleNum = 25;
+    //   ele.judgeNum = 25;
+    // }
   },
   computed: {
     currentPageData() {
@@ -215,7 +228,7 @@ export default {
 }
 
 /deep/ .el-drawer:focus {
-  outline: none; 
+  outline: none;
 }
 
 @media (max-width: $MQMobile) {

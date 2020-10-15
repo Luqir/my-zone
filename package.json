@@ -16,6 +16,7 @@
     "vuepress-theme-reco": "1.5.5"
   },
   "dependencies": {
+    "@cloudbase/vue-provider": "^0.3.0",
     "element-ui": "^2.13.2",
     "vue-class-component": "^7.2.3"
   },
