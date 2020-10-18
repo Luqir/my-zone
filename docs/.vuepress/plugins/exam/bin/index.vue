@@ -100,21 +100,42 @@ export default {
       .anonymousAuthProvider()
       .signIn();
     // 数据库查询
-    const queryResult = await this.$cloudbase
-      .database()
-      .collection("exam_subject")
-      .where({})
-      .get();
+    const db = this.$cloudbase.database();
+    const $ = db.command.aggregate;
+
+    const queryResult = await db
+      .collection("exam_questions")
+      .aggregate()
+      .lookup({
+        from: "exam_subjects",
+        localField: "sub_id",
+        foreignField: "_id",
+        as: "subject",
+      })
+      .replaceRoot({
+        newRoot: $.mergeObjects([$.arrayElemAt(["$subject", 0]), "$$ROOT"]),
+      })
+      .group({
+        _id: "$name",
+        singleTotal: $.sum(
+          $.cond({ if: $.eq(["$type", 1]), then: 1, else: 0 })
+        ),
+        multipleTotal: $.sum(
+          $.cond({ if: $.eq(["$type", 2]), then: 1, else: 0 })
+        ),
+        judgeTotal: $.sum($.cond({ if: $.eq(["$type", 3]), then: 1, else: 0 })),
+      })
+      .end();
     this.examData = queryResult.data;
 
     // 添加试卷对应题型数量
-    // for (let i = 0, len = this.examData.length; i < len; i++) {
-    //   const ele = this.examData[i];
-    //   ele.index = i;
-    //   ele.singleNum = 25;
-    //   ele.multipleNum = 25;
-    //   ele.judgeNum = 25;
-    // }
+    for (let i = 0, len = this.examData.length; i < len; i++) {
+      const ele = this.examData[i];
+      ele.index = i;
+      ele.singleNum = 25;
+      ele.multipleNum = 25;
+      ele.judgeNum = 25;
+    }
   },
   computed: {
     currentPageData() {
