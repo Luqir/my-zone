@@ -1597,16 +1597,16 @@ html {
 
       & > svg {
         position: absolute;
-        top: -4px;
-        left: 0px;
+        top: -3px;
+        left: 1px;
         color: #c1c1cb;
         width: 19px;
         height: 19px;
         display: none;
 
         &.icon-error {
-          left: -2.5px;
-          top: -2.5px;
+          left: -1.5px;
+          top: -0.5px;
           width: 18px;
           height: 18px;
         }
@@ -1821,6 +1821,12 @@ html {
 
     .left, .right {
       display: none;
+    }
+
+    .answers {
+      & > .select:hover {
+        background: #fff;
+      }
     }
   }
 }
