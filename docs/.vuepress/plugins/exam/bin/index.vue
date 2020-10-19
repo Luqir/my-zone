@@ -80,14 +80,14 @@
 </template>
 
 <script>
-// import examData from "@/data/examData";
+import examData from "@/data/examData";
 import ExamPage from "./components/Exam";
 
 export default {
   components: { ExamPage },
   data() {
     return {
-      examData: [],
+      examData: examData,
       currentPage: 1,
       config: {},
       drawer: false,
@@ -95,38 +95,38 @@ export default {
   },
   async created() {
     // 匿名登录
-    await this.$cloudbase
-      .auth({ persistence: "local" })
-      .anonymousAuthProvider()
-      .signIn();
-    // 数据库查询
-    const db = this.$cloudbase.database();
-    const $ = db.command.aggregate;
+    // await this.$cloudbase
+    //   .auth({ persistence: "local" })
+    //   .anonymousAuthProvider()
+    //   .signIn();
+    // // 数据库查询
+    // const db = this.$cloudbase.database();
+    // const $ = db.command.aggregate;
 
-    const queryResult = await db
-      .collection("exam_questions")
-      .aggregate()
-      .lookup({
-        from: "exam_subjects",
-        localField: "sub_id",
-        foreignField: "_id",
-        as: "subject",
-      })
-      .replaceRoot({
-        newRoot: $.mergeObjects([$.arrayElemAt(["$subject", 0]), "$$ROOT"]),
-      })
-      .group({
-        _id: "$name",
-        singleTotal: $.sum(
-          $.cond({ if: $.eq(["$type", 1]), then: 1, else: 0 })
-        ),
-        multipleTotal: $.sum(
-          $.cond({ if: $.eq(["$type", 2]), then: 1, else: 0 })
-        ),
-        judgeTotal: $.sum($.cond({ if: $.eq(["$type", 3]), then: 1, else: 0 })),
-      })
-      .end();
-    this.examData = queryResult.data;
+    // const queryResult = await db
+    //   .collection("exam_questions")
+    //   .aggregate()
+    //   .lookup({
+    //     from: "exam_subjects",
+    //     localField: "sub_id",
+    //     foreignField: "_id",
+    //     as: "subject",
+    //   })
+    //   .replaceRoot({
+    //     newRoot: $.mergeObjects([$.arrayElemAt(["$subject", 0]), "$$ROOT"]),
+    //   })
+    //   .group({
+    //     _id: "$name",
+    //     singleTotal: $.sum(
+    //       $.cond({ if: $.eq(["$type", 1]), then: 1, else: 0 })
+    //     ),
+    //     multipleTotal: $.sum(
+    //       $.cond({ if: $.eq(["$type", 2]), then: 1, else: 0 })
+    //     ),
+    //     judgeTotal: $.sum($.cond({ if: $.eq(["$type", 3]), then: 1, else: 0 })),
+    //   })
+    //   .end();
+    // this.examData = queryResult.data;
 
     // 添加试卷对应题型数量
     for (let i = 0, len = this.examData.length; i < len; i++) {

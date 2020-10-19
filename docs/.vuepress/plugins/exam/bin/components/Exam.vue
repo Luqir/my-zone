@@ -1048,7 +1048,7 @@ html {
 }
 
 .exam {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
   background-size: 100% 100%;
 }
 
@@ -1564,7 +1564,7 @@ html {
     color: #ff4b50;
 
     & .select-icon {
-      border: 1px solid #ff4b50;
+      border: 1px solid #ff4b50 !important;
 
       & > svg {
         color: #ff4b50;
@@ -1752,7 +1752,7 @@ html {
       display: unset;
       color: #ffffff;
       font-size: 16px;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
     }
 
     .out-icon {
@@ -1819,7 +1819,7 @@ html {
       }
     }
 
-    .left {
+    .left, .right {
       display: none;
     }
   }
