@@ -1062,7 +1062,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.out-icon, .header-time, .header-icon, .progress-bar {
+.out-icon, .header-time, .header-icon, .progress-bar, .pagation-mobile {
   display: none;
 }
 
