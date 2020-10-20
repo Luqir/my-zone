@@ -27,13 +27,18 @@
           <!-- 进度栏 -->
           <div class="progress-bar">
             <div class="progress-bar-top">
-              <div>单选题 (共200题)</div>
+              <div>{{listForPageArr[pageQuery.page-1].type|typeFilter}} (共{{list[listForPageArr[pageQuery.page-1].type-1].length}}题)</div>
               <div class="font">
-                <span>1</span>
+                <span>{{pageQuery.page}}</span>
                 <span>/{{totalLength}}</span>
               </div>
             </div>
-            <el-progress :percentage="50" :stroke-width="3" color="#1a8cfe" :show-text="false"></el-progress>
+            <el-progress
+              :percentage="progress"
+              :stroke-width="3"
+              color="#1a8cfe"
+              :show-text="false"
+            ></el-progress>
           </div>
           <!-- 试卷 -->
           <div class="content">
@@ -211,6 +216,16 @@
                 @getCurrentPage="getCurrentPage"
               />
 
+              <div class="pagation-mobile">
+                <div class="btn1 first" ref="pageBtn1" @click="getCurrentPage(pageQuery.page-1)">上一题</div>
+                <div
+                  v-if="pageQuery.page!==totalLength"
+                  class="btn2"
+                  @click="getCurrentPage(pageQuery.page+1);"
+                >下一题</div>
+                <div v-else class="btn2">提交试卷</div>
+              </div>
+
               <div class="support">
                 CopyRight © 2020 By
                 <span class="up">Luqir</span>
@@ -267,7 +282,7 @@
                       <span>{{ totalLength }}</span>
                     </div>
                     <div class="right-top-process-bar">
-                      <div class="right-top-process-bar-item" :style="progressStyle" />
+                      <div class="right-top-process-bar-item" :style="{width: progress + '%'}" />
                     </div>
                   </li>
 
@@ -328,16 +343,16 @@ export default {
   props: {
     config: {
       type: Object,
-      default: function () {
+      default: function() {
         return {
           name: "试卷名称",
           singleNum: 25, // 单选题数
           multipleNum: 25, // 多选题数
           judgeNum: 25, // 判断题数
-          path: "", // 题库名称
+          path: "" // 题库名称
         };
-      },
-    },
+      }
+    }
   },
   data() {
     return {
@@ -351,14 +366,14 @@ export default {
         name: "",
         singleNum: 25, // 抽取25题单选题
         multipleNum: 25, // 抽取0题多选题
-        judgeNum: 25, // 抽取25题判断题
+        judgeNum: 25 // 抽取25题判断题
       },
       percentScore: 0, // 正确率
       judgeShow: ["正确", "错误"],
       commitLength: 0, // 已答题目数
       totalLength: 0, // 总题目数
       totalLengthForPage: 0, // 总题目数：用于查看错题时统计总题数
-      progressStyle: { width: 0 }, // 答题进度条
+      progress: 0, // 答题进度条百分比
       answerArr: [], // 所有答题数组
       rightAnswerArr: [],
       wrongAnswerArr: [],
@@ -375,13 +390,13 @@ export default {
       list: [[], [], []], // 初始题库->二维
       listBat: [[], [], []], // 初始题库备份
       examList: [], // 所有题库
-      listForPageArr: [], // 考卷显示题库->一维
+      listForPageArr: [{ type: 1 }], // 考卷显示题库->一维
       listForPageArrBat: [], // 考试题库备份
       pageQuery: {
         page: 1,
-        limit: 25,
+        limit: 1
       },
-      signIdArr: [],
+      signIdArr: []
     };
   },
   filters: {
@@ -402,23 +417,23 @@ export default {
       if (type === 1) return "单选题";
       else if (type === 2) return "多选题";
       else if (type === 3) return "判断题";
-    },
+    }
   },
   created() {
-    dynamicLoadScript("/exam-data/中级.js", (err) => {
+    dynamicLoadScript("/exam-data/中级.js", err => {
       if (err) {
         this.$message.error(err.message);
         return;
       }
 
       let tempArr = [[], [], []];
-      examList.map((item) => {
+      examList.map(item => {
         tempArr[item.type - 1].push(item);
       });
 
       // 克隆数组做备份
       this.examList = [...tempArr];
-      
+
       this.status = 1;
     });
 
@@ -464,14 +479,22 @@ export default {
         tempArr[item.type - 1].push(item);
       }
 
-      return tempArr;
-    },
+      // total为零表示刚开始的空数组，解决“progress-bar-top”下报.type未定义问题
+      let total = tempArr.reduce((total, item) => {
+        return total + item.length;
+      }, 0);
+
+      return total ? tempArr : [[{ type: 1 }]];
+    }
   },
   watch: {
     commitLength(newLen, oldLen) {
-      this.progressStyle = {
-        width: (newLen / this.totalLength) * 100 + "%",
-      };
+      this.progress = (newLen / this.totalLength) * 100;
+    },
+    "pageQuery.page"(newPage, oldPage) {
+      newPage === 1
+        ? (this.$refs.pageBtn1.className = "btn1 first")
+        : (this.$refs.pageBtn1.className = "btn1");
     },
     status(newValue, oldValue) {
       // 考试状态
@@ -480,7 +503,7 @@ export default {
         this.totalLength = 0;
         this.totalLengthForPage = 0;
         this.commitLength = 0;
-        this.progressStyle.width = 0;
+        this.progress = 0;
         this.answerArr = [];
         this.listForPageArr = [];
         this.listForPageArrBat = [];
@@ -514,7 +537,7 @@ export default {
         // 初始状态
         this.clearStatus();
       }
-    },
+    }
   },
   methods: {
     init() {
@@ -744,7 +767,7 @@ export default {
         this.$refs["box" + id][0].classList.remove("checked");
       }
       let temp = 0;
-      this.answerArr.map((item) => {
+      this.answerArr.map(item => {
         if (item) temp++;
       });
       this.commitLength = temp;
@@ -761,7 +784,7 @@ export default {
           this.displayFun("none", "inline-block");
 
           // 筛选试题之后要把 list 里面用于展示的数值改变
-          this.wrongAnswerArr.map((item) => {
+          this.wrongAnswerArr.map(item => {
             this.list[item.type - 1][item.indexForShow - 1].indexForPage =
               item.indexForPage;
           });
@@ -772,7 +795,7 @@ export default {
           this.displayFun("inline-block", "none");
 
           // 筛选试题之后要把 list 里面用于展示的数值改变
-          this.rightAnswerArr.map((item) => {
+          this.rightAnswerArr.map(item => {
             this.list[item.type - 1][item.indexForShow - 1].indexForPage =
               item.indexForPage;
           });
@@ -793,12 +816,12 @@ export default {
     },
     // 答对->错题不显示且不可跳转
     displayFun(rightAnswerPoint, wrongAnswerPoint) {
-      this.rightAnswerArr.map((item) => {
+      this.rightAnswerArr.map(item => {
         this.$refs["box" + item.id][0].parentElement.style[
           "display"
         ] = rightAnswerPoint;
       });
-      this.wrongAnswerArr.map((item) => {
+      this.wrongAnswerArr.map(item => {
         this.$refs["box" + item.id][0].parentElement.style[
           "display"
         ] = wrongAnswerPoint;
@@ -878,7 +901,7 @@ export default {
 
       // 将当前分页的二维数组展开成一维
       const tempArr = [];
-      [].concat.apply([], this.listForPage).filter((item) => {
+      [].concat.apply([], this.listForPage).filter(item => {
         tempArr.push(item);
       });
       // 将用户选择过的选项填回对应选项中
@@ -941,7 +964,7 @@ export default {
               .getElementById("rightAnswer" + ele.id)
               .getAttribute("answer");
 
-            correrAnswer.split("").map((answer) => {
+            correrAnswer.split("").map(answer => {
               const answerNode = document.getElementById(answer + ele.id);
               answerNode.setAttribute("checked", "checked");
               // 防bug 有时候获取不到:checked
@@ -955,7 +978,7 @@ export default {
               // 解析框变红
               this.$refs["analysis" + ele.id][0].classList.add("wrong");
               if (this.answerArr[ele.id]) {
-                this.answerArr[ele.id].split("").map((val) => {
+                this.answerArr[ele.id].split("").map(val => {
                   // 如果是多选之一则不动作
                   if (correrAnswer.indexOf(val) === -1) {
                     // input->label
@@ -984,7 +1007,7 @@ export default {
         this.$confirm("确定离开当前页面？", "", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning",
+          type: "warning"
         })
           .then(() => {
             this.$emit("close");
@@ -1033,8 +1056,8 @@ export default {
         arr[2] = arr[2].slice(0, this.config.judgeNum); // 截取用户需要的题目数量
       }
       return arr;
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -1103,7 +1126,7 @@ html {
   height: calc(100vh - 70px);
   padding: 20px 230px 80px 350px;
 
-  .content{
+  .content {
     margin: unset;
     max-width: unset;
     padding: unset;
@@ -1505,17 +1528,13 @@ html {
     font-size: 16px;
     line-height: 22px;
     margin-bottom: 10px;
-    padding-left: 20px;
-    position: relative;
     word-wrap: break-word;
     display: flex;
 
     &-index {
       color: #1a8cfe;
-      width: 41px;
-      text-align: right;
-      margin-left: -46px;
       margin-right: 5px;
+      margin-left: -10px;
     }
 
     &-topic {
@@ -1573,6 +1592,7 @@ html {
   }
 
   .answers label {
+    box-sizing: border-box;
     width: 100%;
     padding: 10px 15px 10px 45px;
     line-height: 20px;
@@ -1739,14 +1759,14 @@ html {
 }
 
 @media (max-width: $MQMobile) {
+  .header-name, .out-btn, .left, .right, .sign {
+    display: none !important;
+  }
+
   .el-header {
     background: #1a8cfe;
     height: 45px !important;
     box-shadow: unset;
-
-    .header-name, .out-btn {
-      display: none;
-    }
 
     .header-time {
       display: unset;
@@ -1791,6 +1811,9 @@ html {
       background: #fff;
       margin: -10px -10px 10px;
       height: 44px;
+      position: fixed;
+      width: 100%;
+      z-index: 99;
 
       &-top {
         display: flex;
@@ -1819,13 +1842,101 @@ html {
       }
     }
 
-    .left, .right {
-      display: none;
+    .content {
+      margin-top: 44px;
     }
 
     .answers {
       & > .select:hover {
         background: #fff;
+      }
+    }
+
+    .body {
+      border: 0;
+
+      .support {
+        display: none;
+      }
+
+      .questions {
+        border-bottom: 0;
+
+        &-title {
+          display: none;
+        }
+
+        &-content {
+          padding: 20px 20px 30px;
+
+          .question-content {
+            padding: 0;
+
+            .exam-question {
+              margin-bottom: 15px;
+            }
+
+            .exam-question-index {
+              display: none;
+            }
+          }
+        }
+      }
+
+      .pagation {
+        display: none;
+      }
+
+      .pagation-mobile {
+        position: fixed;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        background-color: #eff3f7;
+        width: 100%;
+        margin-left: -10px;
+        height: 65px;
+        padding: 10px;
+        box-sizing: border-box;
+        font-size: 14px;
+
+        &>div {
+          height: 42px;
+          border: 1px solid #1a8cfe;
+          border-radius: 22px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          &.btn1 {
+            width: 100px;
+            background: #fff;
+            color: #1a8cfe;
+            margin-right: 10px;
+
+            &.first {
+              color: #DCDFE6;
+              border: 1px solid #DCDFE6;
+              pointer-events: none;
+            }
+
+            &:active {
+              background-color: #d4d4d4;
+              border-color: #144076;
+            }
+          }
+
+          &.btn2 {
+            background: #1a8cfe;
+            color: #fff;
+            flex: 1;
+
+            &:active {
+              background-color: #2064b7;
+              border-color: #1a5399;
+            }
+          }
+        }
       }
     }
   }
