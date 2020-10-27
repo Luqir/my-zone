@@ -80,29 +80,29 @@
 </template>
 
 <script>
-import examData from "@/data/examData";
 import ExamPage from "./components/Exam";
 
 export default {
   components: { ExamPage },
   data() {
     return {
-      examData: examData,
+      examData: [],
       currentPage: 1,
       config: {},
-      drawer: false,
+      drawer: false
     };
   },
   async created() {
     // 匿名登录
-    // await this.$cloudbase
-    //   .auth({ persistence: "local" })
-    //   .anonymousAuthProvider()
-    //   .signIn();
-    // // 数据库查询
-    // const db = this.$cloudbase.database();
-    // const $ = db.command.aggregate;
+    await this.$cloudbase
+      .auth({ persistence: "local" })
+      .anonymousAuthProvider()
+      .signIn();
+    // 数据库查询
+    const db = this.$cloudbase.database();
+    const $ = db.command.aggregate;
 
+    // web sdk 不支持联表查询
     // const queryResult = await db
     //   .collection("exam_questions")
     //   .aggregate()
@@ -110,10 +110,10 @@ export default {
     //     from: "exam_subjects",
     //     localField: "sub_id",
     //     foreignField: "_id",
-    //     as: "subject",
+    //     as: "subject"
     //   })
     //   .replaceRoot({
-    //     newRoot: $.mergeObjects([$.arrayElemAt(["$subject", 0]), "$$ROOT"]),
+    //     newRoot: $.mergeObjects([$.arrayElemAt(["$subject", 0]), "$$ROOT"])
     //   })
     //   .group({
     //     _id: "$name",
@@ -123,19 +123,52 @@ export default {
     //     multipleTotal: $.sum(
     //       $.cond({ if: $.eq(["$type", 2]), then: 1, else: 0 })
     //     ),
-    //     judgeTotal: $.sum($.cond({ if: $.eq(["$type", 3]), then: 1, else: 0 })),
+    //     judgeTotal: $.sum($.cond({ if: $.eq(["$type", 3]), then: 1, else: 0 }))
     //   })
     //   .end();
-    // this.examData = queryResult.data;
 
-    // 添加试卷对应题型数量
-    for (let i = 0, len = this.examData.length; i < len; i++) {
-      const ele = this.examData[i];
-      ele.index = i;
-      ele.singleNum = 25;
-      ele.multipleNum = 25;
-      ele.judgeNum = 25;
-    }
+    const quesCountResult = await db
+      .collection("exam_questions")
+      .aggregate()
+      .group({
+        _id: "$sub_id",
+        singleTotal: $.sum(
+          $.cond({ if: $.eq(["$type", 1]), then: 1, else: 0 })
+        ),
+        multipleTotal: $.sum(
+          $.cond({ if: $.eq(["$type", 2]), then: 1, else: 0 })
+        ),
+        judgeTotal: $.sum($.cond({ if: $.eq(["$type", 3]), then: 1, else: 0 }))
+      })
+      .end();
+    const subCountResult = await db
+      .collection("exam_subjects")
+      .field({ order: false })
+      .orderBy("order", "asc")
+      .get();
+
+    let tempArr = [];
+    const quesArr = quesCountResult.data;
+    const subArr = subCountResult.data;
+
+    subArr.map((subItem, index) => {
+      quesArr.map(quesItem => {
+        if (quesItem._id === subItem._id) {
+          tempArr.push({
+            index,
+            name: subItem.name,
+            singleTotal: quesItem.singleTotal, // 单选题数
+            multipleTotal: quesItem.multipleTotal, // 多选题数
+            judgeTotal: quesItem.judgeTotal, // 判断题数
+            singleNum: 25,
+            multipleNum: 25,
+            judgeNum: 25
+          });
+        }
+      });
+    });
+
+    this.examData = tempArr;
   },
   computed: {
     currentPageData() {
