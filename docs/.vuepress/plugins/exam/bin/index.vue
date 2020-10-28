@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import ExamPage from "./components/Exam";
+import ExamPage from './components/Exam'
 
 export default {
   components: { ExamPage },
@@ -90,17 +90,14 @@ export default {
       currentPage: 1,
       config: {},
       drawer: false
-    };
+    }
   },
   async created() {
     // 匿名登录
-    await this.$cloudbase
-      .auth({ persistence: "local" })
-      .anonymousAuthProvider()
-      .signIn();
+    await this.$cloudbase.auth({ persistence: 'local' }).anonymousAuthProvider().signIn()
     // 数据库查询
-    const db = this.$cloudbase.database();
-    const $ = db.command.aggregate;
+    const db = this.$cloudbase.database()
+    const $ = db.command.aggregate
 
     // web sdk 不支持联表查询
     // const queryResult = await db
@@ -128,31 +125,27 @@ export default {
     //   .end();
 
     const quesCountResult = await db
-      .collection("exam_questions")
+      .collection('exam_questions')
       .aggregate()
       .group({
-        _id: "$sub_id",
-        singleTotal: $.sum(
-          $.cond({ if: $.eq(["$type", 1]), then: 1, else: 0 })
-        ),
-        multipleTotal: $.sum(
-          $.cond({ if: $.eq(["$type", 2]), then: 1, else: 0 })
-        ),
-        judgeTotal: $.sum($.cond({ if: $.eq(["$type", 3]), then: 1, else: 0 }))
+        _id: '$sub_id',
+        singleTotal: $.sum($.cond({ if: $.eq(['$type', 1]), then: 1, else: 0 })),
+        multipleTotal: $.sum($.cond({ if: $.eq(['$type', 2]), then: 1, else: 0 })),
+        judgeTotal: $.sum($.cond({ if: $.eq(['$type', 3]), then: 1, else: 0 }))
       })
-      .end();
+      .end()
     const subCountResult = await db
-      .collection("exam_subjects")
+      .collection('exam_subjects')
       .field({ order: false })
-      .orderBy("order", "asc")
-      .get();
+      .orderBy('order', 'asc')
+      .get()
 
-    let tempArr = [];
-    const quesArr = quesCountResult.data;
-    const subArr = subCountResult.data;
+    let tempArr = []
+    const quesArr = quesCountResult.data
+    const subArr = subCountResult.data
 
     subArr.map((subItem, index) => {
-      quesArr.map(quesItem => {
+      quesArr.map((quesItem) => {
         if (quesItem._id === subItem._id) {
           tempArr.push({
             index,
@@ -163,38 +156,38 @@ export default {
             singleNum: 25,
             multipleNum: 25,
             judgeNum: 25
-          });
+          })
         }
-      });
-    });
+      })
+    })
 
-    this.examData = tempArr;
+    this.examData = tempArr
   },
   computed: {
     currentPageData() {
-      const start = this.currentPage * 10 - 10;
-      const end = this.currentPage * 10;
-      return this.examData.slice(start, end);
+      const start = this.currentPage * 10 - 10
+      const end = this.currentPage * 10
+      return this.examData.slice(start, end)
     }
   },
   methods: {
     getCurrentPage(currentPage) {
-      this.currentPage = currentPage;
+      this.currentPage = currentPage
       setTimeout(() => {
-        window.scrollTo(0, 0);
-      }, 100);
+        window.scrollTo(0, 0)
+      }, 100)
     },
     examBegin(index) {
       // 默认每页10条
-      const idx = this.currentPage * 10 - 10 + index;
-      this.config = this.examData[idx];
-      this.drawer = true;
+      const idx = this.currentPage * 10 - 10 + index
+      this.config = this.examData[idx]
+      this.drawer = true
     },
     drawerClose() {
-      this.drawer = false;
+      this.drawer = false
     }
   }
-};
+}
 </script>
 
 
