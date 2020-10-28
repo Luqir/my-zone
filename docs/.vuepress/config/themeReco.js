@@ -4,8 +4,8 @@ if (process.env.NODE_ENV !== 'development') {
     // 评论 Valine: 开发时不显示以免开发时页面阅读次数就非常高
     valineConfig: {
       appId: 'eSVAWwXrWB8Xln9YtnJLlrkC-gzGzoHsz',
-      appKey: 'uIc2nTu8NGFJPKSNGKfRkrHo',
-    },
+      appKey: 'uIc2nTu8NGFJPKSNGKfRkrHo'
+    }
   }
 }
 
@@ -16,12 +16,12 @@ const config = {
   blogConfig: {
     category: {
       location: 2, // 在导航栏菜单中所占的位置，默认2
-      text: 'Category', // 默认 “分类”
+      text: 'Category' // 默认 “分类”
     },
     tag: {
       location: 4, // 在导航栏菜单中所占的位置，默认3
-      text: 'Tag', // 默认 “标签”
-    },
+      text: 'Tag' // 默认 “标签”
+    }
   },
 
   // 最后更新时间 string | boolean
@@ -43,15 +43,15 @@ const config = {
       title: '寒含函',
       desc: '积一时之跬步，臻千里之遥程',
       email: 'luqir123@qq.com',
-      link: 'http://www.luqirong.com',
+      link: 'http://www.luqirong.com'
     },
     {
       title: 'vuepress-theme-reco',
       desc: 'A simple and beautiful vuepress Blog & Doc theme.',
       avatar: 'https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png',
-      link: 'https://vuepress-theme-reco.recoluan.com/',
-    },
-  ],
+      link: 'https://vuepress-theme-reco.recoluan.com/'
+    }
+  ]
 
   // 腾讯公益404界面
   // noFoundPageByTencent: false

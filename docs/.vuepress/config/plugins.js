@@ -4,11 +4,14 @@ module.exports = [
   require('../plugins/exam/'),
   require('../plugins/svg-icon/'),
   // 更新刷新插件
-  ['@vuepress/pwa', {
-    serviceWorker: true,
-    updatePopup: {
-      message: "发现新内容可用",
-      buttonText: "刷新"
+  [
+    '@vuepress/pwa',
+    {
+      serviceWorker: true,
+      updatePopup: {
+        message: '发现新内容可用',
+        buttonText: '刷新'
+      }
     }
-  }]
+  ]
 ]

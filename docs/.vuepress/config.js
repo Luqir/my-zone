@@ -4,7 +4,7 @@ const themeConfig = require('./config/')
 const plugins = require('./config/plugins')
 
 module.exports = {
-  title: '寒含函の空间',
+  title: '寒含函のblog',
 
   // 加载页介绍
   description: '不畏将来 不念过往',

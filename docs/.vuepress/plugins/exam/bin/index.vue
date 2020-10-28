@@ -2,42 +2,42 @@
   <div class="exam-list">
     <hr style="margin: 1.5rem 0" />
     <div class="exam-list-wrapper">
-      <div class="exam-item" v-for="(exam, index) in currentPageData" :key="index">
+      <div v-for="(exam, index) in currentPageData" :key="index" class="exam-item">
         <form class="info" action="javascript:;">
           <h3 class="title">
             <span class="name">{{ exam.name }}</span>
           </h3>
           <div class="desc">
-            <span class="tag" v-if="exam.singleTotal">
+            <span v-if="exam.singleTotal" class="tag">
               单选：
               <input
+                v-model.number="examData[exam.index].singleNum"
                 type="number"
                 class="input-num"
                 min="0"
                 :max="exam.singleTotal"
-                v-model.number="examData[exam.index].singleNum"
               />
               / {{ exam.singleTotal }}
             </span>
-            <span class="tag" v-if="exam.multipleTotal">
+            <span v-if="exam.multipleTotal" class="tag">
               多选：
               <input
+                v-model.number="examData[exam.index].multipleNum"
                 type="number"
                 class="input-num"
                 min="0"
                 :max="exam.multipleTotal"
-                v-model.number="examData[exam.index].multipleNum"
               />
               / {{ exam.multipleTotal }}
             </span>
-            <span class="tag" v-if="exam.judgeTotal">
+            <span v-if="exam.judgeTotal" class="tag">
               判断：
               <input
+                v-model.number="examData[exam.index].judgeNum"
                 type="number"
                 class="input-num"
                 min="0"
                 :max="exam.judgeTotal"
-                v-model.number="examData[exam.index].judgeNum"
               />
               / {{ exam.judgeTotal }}
             </span>
@@ -58,9 +58,9 @@
     <pagation
       class="pagation"
       :total="examData.length"
-      :currentPage="currentPage"
+      :current-page="currentPage"
       @getCurrentPage="getCurrentPage"
-    ></pagation>
+    />
 
     <!-- 考试 -->
     <el-drawer
@@ -74,7 +74,7 @@
       size="100%"
       append-to-body
     >
-      <ExamPage :config="config" @close="drawerClose" v-if="drawer"></ExamPage>
+      <ExamPage v-if="drawer" :config="config" @close="drawerClose" />
     </el-drawer>
   </div>
 </template>
@@ -90,6 +90,13 @@ export default {
       currentPage: 1,
       config: {},
       drawer: false
+    }
+  },
+  computed: {
+    currentPageData() {
+      const start = this.currentPage * 10 - 10
+      const end = this.currentPage * 10
+      return this.examData.slice(start, end)
     }
   },
   async created() {
@@ -140,7 +147,7 @@ export default {
       .orderBy('order', 'asc')
       .get()
 
-    let tempArr = []
+    const tempArr = []
     const quesArr = quesCountResult.data
     const subArr = subCountResult.data
 
@@ -163,13 +170,6 @@ export default {
 
     this.examData = tempArr
   },
-  computed: {
-    currentPageData() {
-      const start = this.currentPage * 10 - 10
-      const end = this.currentPage * 10
-      return this.examData.slice(start, end)
-    }
-  },
   methods: {
     getCurrentPage(currentPage) {
       this.currentPage = currentPage
@@ -189,7 +189,6 @@ export default {
   }
 }
 </script>
-
 
 <style lang="stylus" scoped>
 .exam-list {

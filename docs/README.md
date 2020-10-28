@@ -12,17 +12,15 @@ home: true
 #   borderRadius: '1rem',
 # }
 # bgImage: /images/bgImg.jpg
-bgImageStyle: {
-  height: '100vh'
-}
+bgImageStyle: { height: '100vh' }
 isShowTitleInHome: false
 actionText: Guide
 actionLink: /views/blogs/other/guide
 features:
-- title: Yesterday
-  details: 起飞
-- title: Today
-  details: 起飞
-- title: Tomorrow
-  details: 起飞
+  - title: Yesterday
+    details: 起飞
+  - title: Today
+    details: 起飞
+  - title: Tomorrow
+    details: 起飞
 ---

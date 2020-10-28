@@ -6,5 +6,5 @@ export default ({ Vue }) => {
   importAll(icons)
 
   // regisiter a svg-icon component
-  Vue.component('svg-icon', SvgIcon)
+  Vue.component('SvgIcon', SvgIcon)
 }

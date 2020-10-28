@@ -15,5 +15,5 @@ module.exports = Object.assign({}, themeReco, {
 
   // 搜索设置
   search: true,
-  searchMaxSuggestions: 10,
+  searchMaxSuggestions: 10
 })

@@ -1,7 +1,7 @@
 <template>
   <div
-    class="exam"
     v-if="hackReset"
+    class="exam"
     :style="{backgroundImage:`url(${require('@/public/images/exam.jpg')})`}"
   >
     <el-container>
@@ -19,7 +19,7 @@
         <div class="header-icon">
           <svg-icon icon-class="staro" />
           <svg-icon icon-class="font" />
-          <svg-icon icon-class="answer-card" @click />
+          <svg-icon icon-class="answer-card" />
         </div>
       </el-header>
       <el-container>
@@ -27,10 +27,13 @@
           <!-- 进度栏 -->
           <div class="progress-bar">
             <div class="progress-bar-top">
-              <div>{{listForPageArr[pageQuery.page-1].type|typeFilter}} (共{{list[listForPageArr[pageQuery.page-1].type-1].length}}题)</div>
+              <div>
+                {{ listForPageArr[pageQuery.page-1].type|typeFilter }}
+                (共{{ list[listForPageArr[pageQuery.page-1].type-1].length }}题)
+              </div>
               <div class="font">
-                <span>{{pageQuery.page}}</span>
-                <span>/{{totalLength}}</span>
+                <span>{{ pageQuery.page }}</span>
+                <span>/{{ totalLength }}</span>
               </div>
             </div>
             <el-progress
@@ -38,17 +41,17 @@
               :stroke-width="3"
               color="#1a8cfe"
               :show-text="false"
-            ></el-progress>
+            />
           </div>
           <!-- 试卷 -->
           <div class="content">
             <!-- 答题卡 -->
             <!-- <left :list="list"></left> -->
             <div class="left">
-              <div class="left-header" />
+              <div class="left-header"></div>
               <div class="left-body">
                 <div class="title">
-                  <div class="title-border" />
+                  <div class="title-border"></div>
                   <div class="title-content">答题卡</div>
                 </div>
 
@@ -74,7 +77,7 @@
                         </div>
                       </div>
 
-                      <div class="split" />
+                      <div class="split"></div>
                     </div>
                   </template>
                 </div>
@@ -111,7 +114,7 @@
 
                       <div class="exam-question" :style="{fontSize:questionFontSize+'px'}">
                         <span class="exam-question-index">{{ ques.indexForShow }}.</span>
-                        <span v-html="ques.title" />
+                        <span v-html="ques.title"></span>
                       </div>
 
                       <div
@@ -156,7 +159,7 @@
                             </span>
                             <span v-if="ques.type!==3" class="words">
                               <span class="words-option">{{ String.fromCharCode(64+number) }}.</span>
-                              <span v-html="ques[String.fromCharCode(96+number)]" />
+                              <span v-html="ques[String.fromCharCode(96+number)]"></span>
                             </span>
                             <span v-else class="words">{{ judgeShow[number-1] }}</span>
                           </label>
@@ -198,7 +201,7 @@
                           </div>
                           <div class="analysis-row">
                             <div class="analysis-title">答案解析：</div>
-                            <div class="analysis-content" v-html="ques.parse" />
+                            <div class="analysis-content" v-html="ques.parse"></div>
                           </div>
                         </template>
                       </div>
@@ -211,13 +214,13 @@
               <pagation
                 v-if="totalLength>0"
                 :total="totalLengthForPage"
-                :currentPage="pageQuery.page"
-                :perPage="pageQuery.limit"
+                :current-page="pageQuery.page"
+                :per-page="pageQuery.limit"
                 @getCurrentPage="getCurrentPage"
               />
 
               <div class="pagation-mobile">
-                <div class="btn1 first" ref="pageBtn1" @click="getCurrentPage(pageQuery.page-1)">上一题</div>
+                <div ref="pageBtn1" class="btn1 first" @click="getCurrentPage(pageQuery.page-1)">上一题</div>
                 <div
                   v-if="pageQuery.page!==totalLength"
                   class="btn2"
@@ -263,7 +266,7 @@
                         <el-dropdown trigger="click" @command="filterAnswer">
                           <span class="el-dropdown-link">
                             {{ filterAnswerText }}
-                            <i class="el-icon-arrow-down" />
+                            <i class="el-icon-arrow-down"></i>
                           </span>
                           <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item command="all">全部</el-dropdown-item>
@@ -282,7 +285,7 @@
                       <span>{{ totalLength }}</span>
                     </div>
                     <div class="right-top-process-bar">
-                      <div class="right-top-process-bar-item" :style="{width: progress + '%'}" />
+                      <div class="right-top-process-bar-item" :style="{width: progress + '%'}"></div>
                     </div>
                   </li>
 
@@ -334,23 +337,42 @@
 </template>
 
 <script>
-import dynamicLoadScript from "./dynamicLoadScript";
-import { deepClone } from "@/helpers/utils.js";
-// import Left from "./Left";
+import dynamicLoadScript from './dynamicLoadScript'
+import { deepClone } from '@/helpers/utils.js'
 
 export default {
+  filters: {
+    timeFormat(time) {
+      const date = new Date(time)
+      const hours = date.getHours() - 8
+      const minutes = date.getMinutes()
+      const seconds = date.getSeconds()
+      return (
+        (hours < 10 ? '0' + hours : hours) +
+        ':' +
+        (minutes < 10 ? '0' + minutes : minutes) +
+        ':' +
+        (seconds < 10 ? '0' + seconds : seconds)
+      )
+    },
+    typeFilter(type) {
+      if (type === 1) return '单选题'
+      else if (type === 2) return '多选题'
+      else if (type === 3) return '判断题'
+    }
+  },
   // components: { Left },
   props: {
     config: {
       type: Object,
       default: function() {
         return {
-          name: "试卷名称",
+          name: '试卷名称',
           singleNum: 25, // 单选题数
           multipleNum: 25, // 多选题数
           judgeNum: 25, // 判断题数
-          path: "" // 题库名称
-        };
+          path: '' // 题库名称
+        }
       }
     }
   },
@@ -363,13 +385,13 @@ export default {
       timer: null,
       listQuery: {
         subId: 1, // 抽取考卷编号为1的题目
-        name: "",
+        name: '',
         singleNum: 25, // 抽取25题单选题
         multipleNum: 25, // 抽取0题多选题
         judgeNum: 25 // 抽取25题判断题
       },
       percentScore: 0, // 正确率
-      judgeShow: ["正确", "错误"],
+      judgeShow: ['正确', '错误'],
       commitLength: 0, // 已答题目数
       totalLength: 0, // 总题目数
       totalLengthForPage: 0, // 总题目数：用于查看错题时统计总题数
@@ -378,9 +400,9 @@ export default {
       rightAnswerArr: [],
       wrongAnswerArr: [],
       noticeSubmit: false,
-      submitNoticeText: "",
-      filterAnswerText: "全部",
-      selectStyle: { "pointer-events": "unset" },
+      submitNoticeText: '',
+      filterAnswerText: '全部',
+      selectStyle: { 'pointer-events': 'unset' },
       examBool: false, // 考试->true,练习->false
       optionsBool: false, // 选项是否乱序
       editSubmit: false,
@@ -397,254 +419,226 @@ export default {
         limit: 1
       },
       signIdArr: []
-    };
-  },
-  filters: {
-    timeFormat(time) {
-      const date = new Date(time);
-      const hours = date.getHours() - 8;
-      const minutes = date.getMinutes();
-      const seconds = date.getSeconds();
-      return (
-        (hours < 10 ? "0" + hours : hours) +
-        ":" +
-        (minutes < 10 ? "0" + minutes : minutes) +
-        ":" +
-        (seconds < 10 ? "0" + seconds : seconds)
-      );
-    },
-    typeFilter(type) {
-      if (type === 1) return "单选题";
-      else if (type === 2) return "多选题";
-      else if (type === 3) return "判断题";
     }
-  },
-  created() {
-    dynamicLoadScript("/exam-data/中级.js", err => {
-      if (err) {
-        this.$message.error(err.message);
-        return;
-      }
-
-      let tempArr = [[], [], []];
-      examList.map(item => {
-        tempArr[item.type - 1].push(item);
-      });
-
-      // 克隆数组做备份
-      this.examList = [...tempArr];
-
-      this.status = 1;
-    });
-
-    this.$nextTick(() => {
-      // 禁用右键
-      document.oncontextmenu = () => {
-        if (event.returnValue) event.returnValue = false;
-        else return false;
-      };
-      // 禁用选择
-      document.onselectstart = () => {
-        if (event.returnValue) event.returnValue = false;
-        else return false;
-      };
-      // 禁用复制
-      document.oncopy = () => {
-        if (event.returnValue) event.returnValue = false;
-        else return false;
-      };
-    });
-  },
-  beforeDestroy() {
-    this.status = 0;
   },
   computed: {
     listForPage() {
-      const limit = this.pageQuery.limit;
-      const offset = (this.pageQuery.page - 1) * limit;
+      const limit = this.pageQuery.limit
+      const offset = (this.pageQuery.page - 1) * limit
 
       const showArr =
         this.totalLength >= offset
           ? this.listForPageArr.slice(
-              offset,
-              this.totalLength >= offset + limit ? offset + limit : undefined
-            )
-          : this.listForPageArr;
+            offset,
+            this.totalLength >= offset + limit ? offset + limit : undefined
+          )
+          : this.listForPageArr
 
       // 将一维还原成二维数组
-      const tempArr = [[], [], []];
+      const tempArr = [[], [], []]
       for (let i = 0, len = showArr.length; i < len; i++) {
-        const item = showArr[i];
+        const item = showArr[i]
         // tempArr[0]单选题  tempArr[1]多选题  tempArr[0]判断题
-        tempArr[item.type - 1].push(item);
+        tempArr[item.type - 1].push(item)
       }
 
       // total为零表示刚开始的空数组，解决“progress-bar-top”下报.type未定义问题
-      let total = tempArr.reduce((total, item) => {
-        return total + item.length;
-      }, 0);
+      const total = tempArr.reduce((total, item) => {
+        return total + item.length
+      }, 0)
 
-      return total ? tempArr : [[{ type: 1 }]];
+      return total ? tempArr : [[{ type: 1 }]]
     }
   },
   watch: {
     commitLength(newLen, oldLen) {
-      this.progress = (newLen / this.totalLength) * 100;
+      this.progress = (newLen / this.totalLength) * 100
     },
-    "pageQuery.page"(newPage, oldPage) {
+    'pageQuery.page'(newPage, oldPage) {
       newPage === 1
-        ? (this.$refs.pageBtn1.className = "btn1 first")
-        : (this.$refs.pageBtn1.className = "btn1");
+        ? (this.$refs.pageBtn1.className = 'btn1 first')
+        : (this.$refs.pageBtn1.className = 'btn1')
     },
     status(newValue, oldValue) {
       // 考试状态
       if (newValue === 1) {
-        this.timeUse = 0;
-        this.totalLength = 0;
-        this.totalLengthForPage = 0;
-        this.commitLength = 0;
-        this.progress = 0;
-        this.answerArr = [];
-        this.listForPageArr = [];
-        this.listForPageArrBat = [];
-        this.filterAnswerText = "全部";
-        this.selectStyle["pointer-events"] = "unset";
-        this.signIdArr = [];
-        this.pageQuery.page = 1;
+        this.timeUse = 0
+        this.totalLength = 0
+        this.totalLengthForPage = 0
+        this.commitLength = 0
+        this.progress = 0
+        this.answerArr = []
+        this.listForPageArr = []
+        this.listForPageArrBat = []
+        this.filterAnswerText = '全部'
+        this.selectStyle['pointer-events'] = 'unset'
+        this.signIdArr = []
+        this.pageQuery.page = 1
 
         // 是否重做错题(不是则随机抽题组卷)
         if (!this.redoBool) {
           // 截取数组中的随机元素
-          this.list = this.shuffleFun([...this.examList]);
-          this.init();
+          this.list = this.shuffleFun([...this.examList])
+          this.init()
         } else {
-          this.init();
+          this.init()
         }
 
         if (this.timeUse === 0) {
           // 开启时钟
-          let timeCount = 0;
+          let timeCount = 0
           // 兼容不支持Worker的浏览器
           this.timer = setInterval(() => {
-            timeCount++;
-            this.timeUse = timeCount * 1000;
-          }, 1000);
+            timeCount++
+            this.timeUse = timeCount * 1000
+          }, 1000)
         }
       } else if (newValue === 2) {
         // 交卷状态
-        this.clearStatus();
+        this.clearStatus()
       } else if (newValue === 0) {
         // 初始状态
-        this.clearStatus();
+        this.clearStatus()
       }
     }
+  },
+  created() {
+    dynamicLoadScript('/exam-data/中级.js', (err) => {
+      if (err) {
+        this.$message.error(err.message)
+        return
+      }
+
+      const tempArr = [[], [], []]
+      // eslint-disable-next-line no-undef
+      examList.map((item) => {
+        tempArr[item.type - 1].push(item)
+      })
+
+      // 克隆数组做备份
+      this.examList = [...tempArr]
+
+      this.status = 1
+    })
+
+    this.$nextTick(() => {
+      // 禁用右键
+      document.oncontextmenu = () => {
+        if (event.returnValue) event.returnValue = false
+        else return false
+      }
+      // 禁用选择
+      document.onselectstart = () => {
+        if (event.returnValue) event.returnValue = false
+        else return false
+      }
+      // 禁用复制
+      document.oncopy = () => {
+        if (event.returnValue) event.returnValue = false
+        else return false
+      }
+    })
+  },
+  beforeDestroy() {
+    this.status = 0
   },
   methods: {
     init() {
       // 遍历原题库将二维展开成一维
-      let totalLength = 0;
-      let typeTemp = 0;
-      let indexTemp = 0;
-      [].concat.apply([], this.list).filter((item, index) => {
+      let totalLength = 0
+      let typeTemp = 0
+      let indexTemp = 0
+      ;[].concat.apply([], this.list).filter((item, index) => {
         if (typeTemp !== item.type) {
-          indexTemp = 0;
-          typeTemp = item.type;
+          indexTemp = 0
+          typeTemp = item.type
         }
-        item.indexForShow = ++indexTemp; // 显示题号
-        totalLength++;
-        item.indexForPage = index + 1; // 分页题号
-        this.listForPageArr.push(item);
-        this.listForPageArrBat.push(item);
-      });
+        item.indexForShow = ++indexTemp // 显示题号
+        totalLength++
+        item.indexForPage = index + 1 // 分页题号
+        this.listForPageArr.push(item)
+        this.listForPageArrBat.push(item)
+      })
       // 备份二维题库，以便在筛选题库选 全部 时回填
-      this.listBat = deepClone(this.list);
-      this.totalLength = this.totalLengthForPage = totalLength;
+      this.listBat = deepClone(this.list)
+      this.totalLength = this.totalLengthForPage = totalLength
     },
     redoVisibleFun() {
-      this.redoVisible = false;
-      this.redo();
+      this.redoVisible = false
+      this.redo()
     },
     redo() {
-      this.hackReset = false;
-      const tempArr = [[], [], []];
+      this.hackReset = false
+      const tempArr = [[], [], []]
       // 将一维还原成二维数组
       for (let i = 0, len = this.wrongAnswerArr.length; i < len; i++) {
-        const item = this.wrongAnswerArr[i];
+        const item = this.wrongAnswerArr[i]
         // tempArr[0]单选题  tempArr[1]多选题  tempArr[0]判断题
-        tempArr[item.type - 1].push(item);
+        tempArr[item.type - 1].push(item)
       }
-      this.list = tempArr;
-      this.redoBool = true;
+      this.list = tempArr
+      this.redoBool = true
       this.$nextTick(() => {
-        this.hackReset = true;
-        this.status = 1;
-      });
+        this.hackReset = true
+        this.status = 1
+      })
     },
     // 阅卷
     review() {
-      this.status = 2;
-      this.pageQuery.page = 1;
-      this.rightAnswerArr = [];
-      this.wrongAnswerArr = [];
-      this.noticeSubmit = false;
+      this.status = 2
+      this.pageQuery.page = 1
+      this.rightAnswerArr = []
+      this.wrongAnswerArr = []
+      this.noticeSubmit = false
 
-      let indexForRight = 0;
-      let indexForWrong = 0;
-      for (
-        let index = 0, len = this.listForPageArrBat.length;
-        index < len;
-        index++
-      ) {
-        const item = deepClone(this.listForPageArrBat[index]); // 对象拷贝
+      let indexForRight = 0
+      let indexForWrong = 0
+      for (let index = 0, len = this.listForPageArrBat.length; index < len; index++) {
+        const item = deepClone(this.listForPageArrBat[index]) // 对象拷贝
 
-        if (
-          this.answerArr[item.id] &&
-          this.answerArr[item.id] === item.answer
-        ) {
+        if (this.answerArr[item.id] && this.answerArr[item.id] === item.answer) {
           // 存储正确的题目
-          item.indexForPage = ++indexForRight; // 分页题号
-          this.rightAnswerArr.push(item);
+          item.indexForPage = ++indexForRight // 分页题号
+          this.rightAnswerArr.push(item)
         } else {
           // 答题卡变红
-          this.$refs["box" + item.id][0].classList.add("wrong");
+          this.$refs['box' + item.id][0].classList.add('wrong')
           // 存储错误的题目
-          item.indexForPage = ++indexForWrong; // 分页题号
-          this.wrongAnswerArr.push(item);
+          item.indexForPage = ++indexForWrong // 分页题号
+          this.wrongAnswerArr.push(item)
         }
       }
 
-      this.$nextTick(() => this.pageFun());
+      this.$nextTick(() => this.pageFun())
       // 正确率
-      this.percentScore =
-        Math.floor((this.rightAnswerArr.length / this.totalLength) * 10000) /
-        100;
+      this.percentScore = Math.floor((this.rightAnswerArr.length / this.totalLength) * 10000) / 100
       // 回到顶部
     },
     // 提交确认
     submit() {
       // 再考一次
       if (this.status === 2) {
-        this.submitNoticeText = "是否重新组卷再考一次？";
+        this.submitNoticeText = '是否重新组卷再考一次？'
       } else {
         if (this.commitLength === this.totalLength) {
-          this.submitNoticeText = "是否现在交卷？";
+          this.submitNoticeText = '是否现在交卷？'
         } else {
-          this.submitNoticeText = "有试题未完成，是否现在交卷？";
+          this.submitNoticeText = '有试题未完成，是否现在交卷？'
         }
       }
-      this.noticeSubmit = true;
+      this.noticeSubmit = true
     },
     submitSure() {
       if (this.status === 2) {
-        this.redoBool = false;
-        this.hackReset = false;
+        this.redoBool = false
+        this.hackReset = false
         this.$nextTick(() => {
-          this.hackReset = true;
-          this.status = 1;
-          this.noticeSubmit = false;
-        });
+          this.hackReset = true
+          this.status = 1
+          this.noticeSubmit = false
+        })
       } else {
-        this.review();
+        this.review()
       }
     },
     // 单选，多选，判断
@@ -654,300 +648,275 @@ export default {
       // 考试才能点
       if (this.status === 1) {
         // 该题的Id
-        const questionsId = e.currentTarget.id.slice(1);
+        const questionsId = e.currentTarget.id.slice(1)
         // 获得点击元素的前一个元素(即隐藏域input)的类型
-        const type = e.currentTarget.type;
-        let keyAnswer = ""; // 答案
+        const type = e.currentTarget.type
+        let keyAnswer = '' // 答案
         // 当前试题中answers节点下的所有input选项
-        const inputArr = this.$refs[
-          "answer" + questionsId
-        ][0].getElementsByClassName("radioOrCheck");
+        const inputArr = this.$refs['answer' + questionsId][0].getElementsByClassName(
+          'radioOrCheck'
+        )
         // 首先要等radio被选中后才能获取
-        if (type === "radio") {
+        if (type === 'radio') {
           // 获取题型
           for (let i = 0, len = inputArr.length; i < len; i++) {
-            const element = inputArr[i];
+            const element = inputArr[i]
             if (element.checked) {
-              keyAnswer = element.id.charAt(0);
-              element.nextElementSibling.firstElementChild.firstElementChild.style.display =
-                "unset";
+              keyAnswer = element.id.charAt(0)
+              element.nextElementSibling.firstElementChild.firstElementChild.style.display = 'unset'
               // 防bug 有时候获取不到:checked
-              element.classList.add("checked");
+              element.classList.add('checked')
             } else {
               // 判断题就一直显示
-              element.nextElementSibling.firstElementChild.firstElementChild.style.display =
-                "none";
-              element.classList.remove("checked");
+              element.nextElementSibling.firstElementChild.firstElementChild.style.display = 'none'
+              element.classList.remove('checked')
             }
           }
-        } else if (type === "checkbox") {
+        } else if (type === 'checkbox') {
           for (let i = 0, len = inputArr.length; i < len; i++) {
-            const element = inputArr[i];
+            const element = inputArr[i]
             if (element.checked) {
-              keyAnswer += element.id.charAt();
-              element.nextElementSibling.firstElementChild.firstElementChild.style.display =
-                "unset";
+              keyAnswer += element.id.charAt()
+              element.nextElementSibling.firstElementChild.firstElementChild.style.display = 'unset'
               // 防bug 有时候获取不到:checked
-              element.classList.add("checked");
+              element.classList.add('checked')
             } else {
-              element.nextElementSibling.firstElementChild.firstElementChild.style.display =
-                "none";
-              element.classList.remove("checked");
+              element.nextElementSibling.firstElementChild.firstElementChild.style.display = 'none'
+              element.classList.remove('checked')
             }
           }
         }
 
-        this.saveAnswers(Number(questionsId), keyAnswer);
+        this.saveAnswers(Number(questionsId), keyAnswer)
 
         this.$nextTick(() => {
           // 练习模式--begin
-          if (!this.examBool && type !== "checkbox") {
-            this.markRedFun(questionsId, keyAnswer);
+          if (!this.examBool && type !== 'checkbox') {
+            this.markRedFun(questionsId, keyAnswer)
           }
           // 练习模式--end
-        });
+        })
       } else {
         // 非考试状态不让选中
-        e.preventDefault();
+        e.preventDefault()
       }
     },
     markRedFun(questionsId, keyAnswer) {
       // 正确答案
       const correrAnswer = document
-        .getElementById("rightAnswer" + questionsId)
-        .getAttribute("answer");
+        .getElementById('rightAnswer' + questionsId)
+        .getAttribute('answer')
 
       if (keyAnswer !== correrAnswer) {
         // 答题卡变红
-        this.$refs["box" + questionsId][0].classList.add("wrong");
+        this.$refs['box' + questionsId][0].classList.add('wrong')
         // 解析框变红
-        this.$refs["analysis" + questionsId][0].classList.add("wrong");
+        this.$refs['analysis' + questionsId][0].classList.add('wrong')
       }
       // 结束答题显示所有正确答案(<input id="a1">)
-      const answerNode = document.getElementById(correrAnswer + questionsId);
-      answerNode.setAttribute("checked", "checked");
+      const answerNode = document.getElementById(correrAnswer + questionsId)
+      answerNode.setAttribute('checked', 'checked')
       // 防bug 有时候获取不到:checked
-      answerNode.classList.add("checked");
+      answerNode.classList.add('checked')
       // input->label->span->svg
-      answerNode.nextElementSibling.firstElementChild.firstElementChild.style.display =
-        "unset";
+      answerNode.nextElementSibling.firstElementChild.firstElementChild.style.display = 'unset'
       // 原错误答案红色显示（未答不显示红色）
-      if (keyAnswer !== "" && keyAnswer !== correrAnswer) {
+      if (keyAnswer !== '' && keyAnswer !== correrAnswer) {
         // input->label
-        const labelNode = document.getElementById(keyAnswer + questionsId)
-          .nextElementSibling;
-        labelNode.classList.add("wrong");
+        const labelNode = document.getElementById(keyAnswer + questionsId).nextElementSibling
+        labelNode.classList.add('wrong')
         // label->span->svg 隐藏错误答案的勾
-        labelNode.firstElementChild.firstElementChild.style.display = "none";
+        labelNode.firstElementChild.firstElementChild.style.display = 'none'
       }
       // 答完以后就不能再点击了
-      this.$refs["answer" + questionsId][0].style["pointer-events"] = "none";
+      this.$refs['answer' + questionsId][0].style['pointer-events'] = 'none'
     },
     // 缓存已答考题数据
     saveAnswers(questionsId, keyAnswer) {
       // 多选题取消所有选项的情况
-      if (keyAnswer === "") {
-        this.answerArr[questionsId] = keyAnswer;
-        this.commitProcess(questionsId, false);
+      if (keyAnswer === '') {
+        this.answerArr[questionsId] = keyAnswer
+        this.commitProcess(questionsId, false)
         // 从未选择过
       } else if (!this.answerArr[questionsId]) {
-        this.answerArr[questionsId] = keyAnswer;
-        this.commitProcess(questionsId, true);
+        this.answerArr[questionsId] = keyAnswer
+        this.commitProcess(questionsId, true)
         // 切换选项进度不变
       } else {
-        this.answerArr[questionsId] = keyAnswer;
+        this.answerArr[questionsId] = keyAnswer
       }
     },
     // 答题进度(左侧进度、右侧进度)
     // id: 试题id，status：true答题，false取消
     commitProcess(id, status) {
       if (status) {
-        this.$refs["box" + id][0].classList.add("checked");
+        this.$refs['box' + id][0].classList.add('checked')
       } else {
-        this.$refs["box" + id][0].classList.remove("checked");
+        this.$refs['box' + id][0].classList.remove('checked')
       }
-      let temp = 0;
-      this.answerArr.map(item => {
-        if (item) temp++;
-      });
-      this.commitLength = temp;
+      let temp = 0
+      this.answerArr.map((item) => {
+        if (item) temp++
+      })
+      this.commitLength = temp
     },
     // 显示答对/答错/全部题目
     filterAnswer(command) {
-      const temp = { all: "全部", right: "答对", wrong: "答错" };
+      const temp = { all: '全部', right: '答对', wrong: '答错' }
       if (temp[command] === this.filterAnswerText) {
-        return;
+        return
       } else {
-        if (command === "wrong") {
-          this.filterAnswerText = "答错";
-          this.listForPageArr = this.wrongAnswerArr;
-          this.displayFun("none", "inline-block");
+        if (command === 'wrong') {
+          this.filterAnswerText = '答错'
+          this.listForPageArr = this.wrongAnswerArr
+          this.displayFun('none', 'inline-block')
 
           // 筛选试题之后要把 list 里面用于展示的数值改变
-          this.wrongAnswerArr.map(item => {
-            this.list[item.type - 1][item.indexForShow - 1].indexForPage =
-              item.indexForPage;
-          });
-          this.getCurrentPage(1);
-        } else if (command === "right") {
-          this.filterAnswerText = "答对";
-          this.listForPageArr = this.rightAnswerArr;
-          this.displayFun("inline-block", "none");
+          this.wrongAnswerArr.map((item) => {
+            this.list[item.type - 1][item.indexForShow - 1].indexForPage = item.indexForPage
+          })
+          this.getCurrentPage(1)
+        } else if (command === 'right') {
+          this.filterAnswerText = '答对'
+          this.listForPageArr = this.rightAnswerArr
+          this.displayFun('inline-block', 'none')
 
           // 筛选试题之后要把 list 里面用于展示的数值改变
-          this.rightAnswerArr.map(item => {
-            this.list[item.type - 1][item.indexForShow - 1].indexForPage =
-              item.indexForPage;
-          });
-          this.getCurrentPage(1);
+          this.rightAnswerArr.map((item) => {
+            this.list[item.type - 1][item.indexForShow - 1].indexForPage = item.indexForPage
+          })
+          this.getCurrentPage(1)
         } else {
-          this.filterAnswerText = "全部";
-          this.listForPageArr = this.listForPageArrBat;
-          this.displayFun("inline-block", "inline-block");
+          this.filterAnswerText = '全部'
+          this.listForPageArr = this.listForPageArrBat
+          this.displayFun('inline-block', 'inline-block')
 
           // 筛选试题之后要把 list 里面用于展示的数值改变
-          this.list = this.listBat;
-          this.getCurrentPage(1);
+          this.list = this.listBat
+          this.getCurrentPage(1)
         }
-        this.totalLengthForPage = this.listForPageArr.length;
+        this.totalLengthForPage = this.listForPageArr.length
         // 回填用户选择的选项
-        this.$nextTick(() => this.pageFun());
+        this.$nextTick(() => this.pageFun())
       }
     },
     // 答对->错题不显示且不可跳转
     displayFun(rightAnswerPoint, wrongAnswerPoint) {
-      this.rightAnswerArr.map(item => {
-        this.$refs["box" + item.id][0].parentElement.style[
-          "display"
-        ] = rightAnswerPoint;
-      });
-      this.wrongAnswerArr.map(item => {
-        this.$refs["box" + item.id][0].parentElement.style[
-          "display"
-        ] = wrongAnswerPoint;
-      });
+      this.rightAnswerArr.map((item) => {
+        this.$refs['box' + item.id][0].parentElement.style['display'] = rightAnswerPoint
+      })
+      this.wrongAnswerArr.map((item) => {
+        this.$refs['box' + item.id][0].parentElement.style['display'] = wrongAnswerPoint
+      })
     },
     selectClass(type) {
-      if (type === 1) return "single-select";
-      else if (type === 2) return "multi-select";
-      else if (type === 3) return "judge";
+      if (type === 1) return 'single-select'
+      else if (type === 2) return 'multi-select'
+      else if (type === 3) return 'judge'
     },
     // 增加字号
     fontsizePlus(e) {
       if (this.questionFontSize < 20) {
-        this.questionFontSize = this.questionFontSize + 1;
-        this.answerFontSize = this.answerFontSize + 1;
+        this.questionFontSize = this.questionFontSize + 1
+        this.answerFontSize = this.answerFontSize + 1
       }
     },
     // 减小字号
     fontsizeMinus(e) {
       if (this.questionFontSize > 14) {
-        this.questionFontSize = this.questionFontSize - 1;
-        this.answerFontSize = this.answerFontSize - 1;
+        this.questionFontSize = this.questionFontSize - 1
+        this.answerFontSize = this.answerFontSize - 1
       }
     },
     // 标记
     signFun(event, id) {
-      if (event.currentTarget.className === "sign") {
-        this.signIdArr.push(id);
-        event.currentTarget.className = "sign checked";
-        this.$refs["box" + id][0].firstElementChild.style.display = "unset";
+      if (event.currentTarget.className === 'sign') {
+        this.signIdArr.push(id)
+        event.currentTarget.className = 'sign checked'
+        this.$refs['box' + id][0].firstElementChild.style.display = 'unset'
       } else {
-        const index = this.signIdArr.indexOf(id);
+        const index = this.signIdArr.indexOf(id)
         if (index > -1) {
-          this.signIdArr.splice(index, 1);
+          this.signIdArr.splice(index, 1)
         }
-        event.currentTarget.className = "sign";
-        this.$refs["box" + id][0].firstElementChild.style.display = "none";
+        event.currentTarget.className = 'sign'
+        this.$refs['box' + id][0].firstElementChild.style.display = 'none'
       }
     },
     // 检测问题有几个选项(以第4个为准比较快,数据库共6个选项)
     getQuestionSelectNum(question) {
-      return question.d
-        ? question.e
-          ? question.f
-            ? 6
-            : 5
-          : 4
-        : question.c
-        ? 3
-        : 2;
+      return question.d ? (question.e ? (question.f ? 6 : 5) : 4) : question.c ? 3 : 2
     },
     cilckToJump(id, quesIndex) {
-      const tempPage = Math.ceil(quesIndex / this.pageQuery.limit);
+      const tempPage = Math.ceil(quesIndex / this.pageQuery.limit)
       if (this.pageQuery.page !== tempPage) {
-        this.pageQuery.page = tempPage;
+        this.pageQuery.page = tempPage
         this.$nextTick(() => {
-          this.pageFun();
-          this.$refs["id" + id][0].scrollIntoView(true); // 顶部对齐
-        });
+          this.pageFun()
+          this.$refs['id' + id][0].scrollIntoView(true) // 顶部对齐
+        })
       } else {
-        this.$refs["id" + id][0].scrollIntoView(true); // 顶部对齐
+        this.$refs['id' + id][0].scrollIntoView(true) // 顶部对齐
       }
     },
     clearStatus() {
       // 交卷后禁止hover效果
-      this.selectStyle["pointer-events"] = "none";
+      this.selectStyle['pointer-events'] = 'none'
       // 关闭计时器
-      clearInterval(this.timer);
+      clearInterval(this.timer)
     },
     editFn() {
-      this.status = 0;
-      this.redoBool = false;
-      this.editSubmit = false;
+      this.status = 0
+      this.redoBool = false
+      this.editSubmit = false
     },
     pageFun() {
-      document.getElementById("el-main").scrollTop = 0;
+      document.getElementById('el-main').scrollTop = 0
 
       // 将当前分页的二维数组展开成一维
-      const tempArr = [];
-      [].concat.apply([], this.listForPage).filter(item => {
-        tempArr.push(item);
-      });
+      const tempArr = []
+      ;[].concat.apply([], this.listForPage).filter((item) => {
+        tempArr.push(item)
+      })
       // 将用户选择过的选项填回对应选项中
       for (let i = 0, len = tempArr.length; i < len; i++) {
-        const ele = tempArr[i];
+        const ele = tempArr[i]
         // 标记回填
         if (this.signIdArr.indexOf(ele.id) > -1) {
-          this.$refs["sign" + ele.id][0].click();
+          this.$refs['sign' + ele.id][0].click()
         }
         // 考试中的状态，为了回填页面跳转时清空的选项
         if (
           this.status === 1 &&
-          typeof this.answerArr[ele.id] !== "undefined" &&
-          this.answerArr[ele.id] !== ""
+          typeof this.answerArr[ele.id] !== 'undefined' &&
+          this.answerArr[ele.id] !== ''
         ) {
           if (ele.type !== 2) {
             if (!this.examBool) {
               // 练习模式选项和答案回填
-              this.markRedFun(ele.id, this.answerArr[ele.id]);
+              this.markRedFun(ele.id, this.answerArr[ele.id])
             } else {
               // 考试模式选项回填
-              const answerNode = document.getElementById(
-                this.answerArr[ele.id] + ele.id
-              );
-              answerNode.setAttribute("checked", "checked");
+              const answerNode = document.getElementById(this.answerArr[ele.id] + ele.id)
+              answerNode.setAttribute('checked', 'checked')
               // 防bug 有时候获取不到:checked
-              answerNode.classList.add("checked");
+              answerNode.classList.add('checked')
               // input->label->span->svg
               answerNode.nextElementSibling.firstElementChild.firstElementChild.style.display =
-                "unset";
+                'unset'
             }
           } else {
             // 当前试题中answers节点下的所有input选项
-            const inputArr = this.$refs[
-              "answer" + ele.id
-            ][0].getElementsByClassName("radioOrCheck");
+            const inputArr = this.$refs['answer' + ele.id][0].getElementsByClassName('radioOrCheck')
             // 多选题选项
-            const answerCharArr = this.answerArr[ele.id].split("");
+            const answerCharArr = this.answerArr[ele.id].split('')
 
             for (let j = 0, len = answerCharArr.length; j < len; j++) {
-              const char = answerCharArr[j];
+              const char = answerCharArr[j]
               inputArr[
                 char.charCodeAt(0) - 97
-              ].nextElementSibling.firstElementChild.firstElementChild.style.display =
-                "unset";
-              inputArr[char.charCodeAt(0) - 97].checked = "checked";
+              ].nextElementSibling.firstElementChild.firstElementChild.style.display = 'unset'
+              inputArr[char.charCodeAt(0) - 97].checked = 'checked'
             }
           }
         } else if (this.status === 2) {
@@ -955,41 +924,37 @@ export default {
           if (ele.type !== 2) {
             this.markRedFun(
               ele.id,
-              typeof this.answerArr[ele.id] === "undefined"
-                ? ""
-                : this.answerArr[ele.id]
-            );
+              typeof this.answerArr[ele.id] === 'undefined' ? '' : this.answerArr[ele.id]
+            )
           } else {
             const correrAnswer = document
-              .getElementById("rightAnswer" + ele.id)
-              .getAttribute("answer");
+              .getElementById('rightAnswer' + ele.id)
+              .getAttribute('answer')
 
-            correrAnswer.split("").map(answer => {
-              const answerNode = document.getElementById(answer + ele.id);
-              answerNode.setAttribute("checked", "checked");
+            correrAnswer.split('').map((answer) => {
+              const answerNode = document.getElementById(answer + ele.id)
+              answerNode.setAttribute('checked', 'checked')
               // 防bug 有时候获取不到:checked
-              answerNode.classList.add("checked");
+              answerNode.classList.add('checked')
               answerNode.nextElementSibling.firstElementChild.firstElementChild.style.display =
-                "unset";
-            });
+                'unset'
+            })
 
             // 原错误答案红色显示（未答不显示红色）
             if (this.answerArr[ele.id] !== correrAnswer) {
               // 解析框变红
-              this.$refs["analysis" + ele.id][0].classList.add("wrong");
+              this.$refs['analysis' + ele.id][0].classList.add('wrong')
               if (this.answerArr[ele.id]) {
-                this.answerArr[ele.id].split("").map(val => {
+                this.answerArr[ele.id].split('').map((val) => {
                   // 如果是多选之一则不动作
                   if (correrAnswer.indexOf(val) === -1) {
                     // input->label
-                    const labelNode = document.getElementById(val + ele.id)
-                      .nextElementSibling;
-                    labelNode.classList.add("wrong");
+                    const labelNode = document.getElementById(val + ele.id).nextElementSibling
+                    labelNode.classList.add('wrong')
                     // label->span->svg 隐藏错误答案的勾
-                    labelNode.firstElementChild.firstElementChild.style.display =
-                      "none";
+                    labelNode.firstElementChild.firstElementChild.style.display = 'none'
                   }
-                });
+                })
               }
             }
           }
@@ -997,26 +962,26 @@ export default {
       }
     },
     getCurrentPage(currentPage) {
-      this.pageQuery.page = currentPage;
+      this.pageQuery.page = currentPage
       this.$nextTick(() => {
-        this.pageFun();
-      });
+        this.pageFun()
+      })
     },
     closeFun() {
       if (this.status === 1) {
-        this.$confirm("确定离开当前页面？", "", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
+        this.$confirm('确定离开当前页面？', '', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
           .then(() => {
-            this.$emit("close");
+            this.$emit('close')
           })
           .catch(() => {
-            return false;
-          });
+            return false
+          })
       } else {
-        this.$emit("close");
+        this.$emit('close')
       }
     },
     /**
@@ -1024,41 +989,32 @@ export default {
      * @param {array} arr 要乱序的数组
      */
     shuffle(arr) {
-      if (arr.length === 1) return arr;
-      const len = arr.length;
+      if (arr.length === 1) return arr
+      const len = arr.length
       for (let i = len - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[arr[i], arr[j]] = [arr[j], arr[i]]
       }
-      return arr;
+      return arr
     },
     // 再考一次时需要重新截取数组 arr：[[],[],[]]
     shuffleFun(arr) {
-      if (
-        this.config.singleTotal !== 0 &&
-        this.config.singleTotal > this.config.singleNum
-      ) {
-        this.shuffle(arr[0]); // 乱序数组
-        arr[0] = arr[0].slice(0, this.config.singleNum); // 截取用户需要的题目数量
+      if (this.config.singleTotal !== 0 && this.config.singleTotal > this.config.singleNum) {
+        this.shuffle(arr[0]) // 乱序数组
+        arr[0] = arr[0].slice(0, this.config.singleNum) // 截取用户需要的题目数量
       }
-      if (
-        this.config.multipleTotal !== 0 &&
-        this.config.multipleTotal > this.config.multipleNum
-      ) {
-        this.shuffle(arr[1]); // 乱序数组
-        arr[1] = arr[1].slice(0, this.config.multipleNum); // 截取用户需要的题目数量
+      if (this.config.multipleTotal !== 0 && this.config.multipleTotal > this.config.multipleNum) {
+        this.shuffle(arr[1]) // 乱序数组
+        arr[1] = arr[1].slice(0, this.config.multipleNum) // 截取用户需要的题目数量
       }
-      if (
-        this.config.judgeTotal !== 0 &&
-        this.config.judgeTotal > this.config.judgeNum
-      ) {
-        this.shuffle(arr[2]); // 乱序数组
-        arr[2] = arr[2].slice(0, this.config.judgeNum); // 截取用户需要的题目数量
+      if (this.config.judgeTotal !== 0 && this.config.judgeTotal > this.config.judgeNum) {
+        this.shuffle(arr[2]) // 乱序数组
+        arr[2] = arr[2].slice(0, this.config.judgeNum) // 截取用户需要的题目数量
       }
-      return arr;
+      return arr
     }
   }
-};
+}
 </script>
 
 <style lang="stylus" scoped>
