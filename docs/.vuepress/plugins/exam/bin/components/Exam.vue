@@ -1843,7 +1843,7 @@ html {
             }
 
             .answers {
-              .select {
+              .select:not(.judge) {
                 & >label {
                   padding-left: 0;
                   padding-right: 0;
