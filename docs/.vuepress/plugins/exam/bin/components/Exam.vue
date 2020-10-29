@@ -232,7 +232,7 @@
                   class="btn2"
                   @click="getCurrentPage(pageQuery.page+1);"
                 >下一题</div>
-                <div v-else class="btn2">提交试卷</div>
+                <div v-else class="btn2" @click="submit">提交试卷</div>
               </div>
 
               <div class="support">
@@ -371,7 +371,7 @@ export default {
   props: {
     config: {
       type: Object,
-      default: function() {
+      default: () => {
         return {
           name: '试卷名称',
           singleNum: 25, // 单选题数
@@ -435,9 +435,9 @@ export default {
       const showArr =
         this.totalLength >= offset
           ? this.listForPageArr.slice(
-            offset,
-            this.totalLength >= offset + limit ? offset + limit : undefined
-          )
+              offset,
+              this.totalLength >= offset + limit ? offset + limit : undefined
+            )
           : this.listForPageArr
 
       // 将一维还原成二维数组
@@ -1873,21 +1873,45 @@ html {
                     }
                   }
                 }
-              }
 
-              .radioOrCheck:checked + label, .radioOrCheck.checked + label {
-                .words-option {
-                  border-color: #1a8cfe;
-                  color: #fff;
-                  background-color: #1a8cfe;
+                .radioOrCheck:checked + label, .radioOrCheck.checked + label {
+                  .words-option {
+                    border-color: #1a8cfe;
+                    color: #fff;
+                    background-color: #1a8cfe;
+                  }
+                }
+
+                .radioOrCheck + label.wrong {
+                  .words-option {
+                    border-color: #ff4b50;
+                    color: #fff;
+                    background-color: #ff4b50;
+                  }
                 }
               }
 
-              .radioOrCheck + label.wrong {
-                .words-option {
-                  border-color: #ff4b50;
-                  color: #fff;
-                  background-color: #ff4b50;
+              .select.judge {
+                & >label {
+                  padding-left: 0;
+                  padding-right: 0;
+
+                  .select-icon {
+                    left: 0;
+                    top: 11px;
+
+                    svg {
+                      display: unset !important;
+                    }
+                  }
+
+                  .words {
+                    padding-left: 10px;
+                  }
+                }
+
+                .radioOrCheck + label.wrong .select-icon svg {
+                  color: #ff4b50;
                 }
               }
             }

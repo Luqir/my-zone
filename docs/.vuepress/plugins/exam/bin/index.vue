@@ -229,7 +229,8 @@ export default {
           margin: 1rem 0 1rem;
 
           .tag {
-            padding: 4px 6px;
+            display: inline-block;
+            padding: 0px 6px;
             font-size: 12px;
             background: $accentColor;
             color: #ffffff;
