@@ -5,7 +5,7 @@
       <div v-for="(exam, index) in currentPageData" :key="index" class="exam-item">
         <form class="info" action="javascript:;">
           <h3 class="title">
-            <span class="name">{{ exam.name }}</span>
+            <span class="name" :title="exam.name">{{ exam.name }}</span>
           </h3>
           <div class="desc">
             <span v-if="exam.singleTotal" class="tag">

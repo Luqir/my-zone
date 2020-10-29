@@ -158,8 +158,14 @@
                               <svg-icon v-else icon-class="correct" />
                             </span>
                             <span v-if="ques.type!==3" class="words">
-                              <span class="words-option">{{ String.fromCharCode(64+number) }}.</span>
-                              <span v-html="ques[String.fromCharCode(96+number)]"></span>
+                              <span class="words-option">
+                                {{ String.fromCharCode(64+number) }}
+                                <span class="words-option-dot">.</span>
+                              </span>
+                              <span
+                                class="words-html"
+                                v-html="ques[String.fromCharCode(96+number)]"
+                              ></span>
                             </span>
                             <span v-else class="words">{{ judgeShow[number-1] }}</span>
                           </label>
@@ -1830,10 +1836,60 @@ html {
 
             .exam-question {
               margin-bottom: 15px;
+
+              &-index {
+                display: none;
+              }
             }
 
-            .exam-question-index {
-              display: none;
+            .answers {
+              .select {
+                & >label {
+                  padding-left: 0;
+                  padding-right: 0;
+
+                  .select-icon {
+                    display: none;
+                  }
+
+                  .words {
+                    display: flex;
+
+                    &-option {
+                      border: 1px solid #656577;
+                      width: 18px;
+                      height: 18px;
+                      line-height: 18px;
+                      border-radius: 50%;
+                      text-align: center;
+
+                      &-dot {
+                        display: none;
+                      }
+                    }
+
+                    &-html {
+                      padding-left: 10px;
+                    }
+                  }
+                }
+              }
+
+              .radioOrCheck:checked + label, .radioOrCheck.checked + label {
+                .words-option {
+                  border-color: #1a8cfe;
+                  color: #fff;
+                  background-color: #1a8cfe;
+                }
+              }
+
+              .radioOrCheck + label.wrong {
+                .words-option {
+                  border-color: #ff4b50;
+                  color: #fff;
+                  background-color: #ff4b50;
+                }
+              }
             }
           }
         }
