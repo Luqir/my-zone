@@ -435,9 +435,9 @@ export default {
       const showArr =
         this.totalLength >= offset
           ? this.listForPageArr.slice(
-              offset,
-              this.totalLength >= offset + limit ? offset + limit : undefined
-            )
+            offset,
+            this.totalLength >= offset + limit ? offset + limit : undefined
+          )
           : this.listForPageArr
 
       // 将一维还原成二维数组
@@ -1857,9 +1857,9 @@ html {
 
                     &-option {
                       border: 1px solid #656577;
-                      width: 18px;
+                      width: 17px;
                       height: 18px;
-                      line-height: 18px;
+                      padding-left: 1px;
                       border-radius: 50%;
                       text-align: center;
 
