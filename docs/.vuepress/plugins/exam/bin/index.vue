@@ -81,6 +81,8 @@
 
 <script>
 import ExamPage from './components/Exam'
+import Vue from 'vue'
+import Cloudbase from '@cloudbase/vue-provider'
 
 export default {
   components: { ExamPage },
@@ -99,7 +101,10 @@ export default {
       return this.examData.slice(start, end)
     }
   },
-  async created() {
+  async mounted() {
+    Vue.use(Cloudbase, {
+      env: 'luqirong-4g93bxp90c60a119'
+    })
     // 匿名登录
     await this.$cloudbase.auth({ persistence: 'local' }).anonymousAuthProvider().signIn()
     // 数据库查询
