@@ -18,7 +18,7 @@
         >退出</el-button>
         <div class="header-icon">
           <svg-icon icon-class="staro" />
-          <svg-icon icon-class="font" />
+          <svg-icon icon-class="font" @click="mobileDrawer=!mobileDrawer" />
           <svg-icon icon-class="answer-card" />
         </div>
       </el-header>
@@ -339,6 +339,26 @@
         <el-button type="primary" @click="redoVisibleFun">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-drawer
+      :visible.sync="mobileDrawer"
+      :with-header="false"
+      direction="ttb"
+      append-to-body
+      :modal="false"
+      :show-close="false"
+      class="mobile-drawer"
+      custom-class="mobile-drawer-modal"
+    >
+      <div class="mobile-drawer-modal-title">字体大小调整</div>
+      <el-slider
+        v-model="fontSizeSliderValue"
+        :marks="fontSizeSliderMarks"
+        :min="12"
+        :max="18"
+        :step="2"
+      />
+    </el-drawer>
   </div>
 </template>
 
@@ -424,7 +444,10 @@ export default {
         page: 1,
         limit: 1
       },
-      signIdArr: []
+      signIdArr: [],
+      mobileDrawer: false,
+      fontSizeSliderValue: 12,
+      fontSizeSliderMarks: { 12: '小', 14: '中', 16: '大', 18: '超大' }
     }
   },
   computed: {
@@ -973,23 +996,6 @@ export default {
         this.pageFun()
       })
     },
-    closeFun() {
-      if (this.status === 1) {
-        this.$confirm('确定离开当前页面？', '', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-          .then(() => {
-            this.$emit('close')
-          })
-          .catch(() => {
-            return false
-          })
-      } else {
-        this.$emit('close')
-      }
-    },
     /**
      * @description 数组乱序——Fisher–Yates shuffle 洗牌算法
      * @param {array} arr 要乱序的数组
@@ -1018,6 +1024,27 @@ export default {
         arr[2] = arr[2].slice(0, this.config.judgeNum) // 截取用户需要的题目数量
       }
       return arr
+    },
+    closeFun() {
+      if (this.mobileDrawer) {
+        this.mobileDrawer = false
+        return
+      }
+      if (this.status === 1) {
+        this.$confirm('确定离开当前页面？', '', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.$emit('close')
+          })
+          .catch(() => {
+            return false
+          })
+      } else {
+        this.$emit('close')
+      }
     }
   }
 }
@@ -1972,6 +1999,35 @@ html {
               border-color: #1a5399;
             }
           }
+        }
+      }
+    }
+  }
+
+  .mobile-drawer {
+    margin-top: 45px;
+    background-color: rgba(0, 0, 0, 0.5);
+
+    /deep/ &-modal {
+      height: auto !important;
+      outline: none;
+      padding: 10px 25px 20px 25px;
+
+      &-title {
+        font-size: 14px;
+        font-weight: bold;
+        color: #27274A;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #F1F3F8;
+      }
+
+      .el-slider {
+        &__runway {
+          margin: 30px 0px 40px;
+        }
+
+        &__button-wrapper {
+          outline: none;
         }
       }
     }
