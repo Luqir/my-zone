@@ -32,7 +32,10 @@ const config = {
   authorAvatar: '/images/avatar-min.gif',
 
   // 备案号 string | boolean
-  record: false,
+  record: '闽ICP备2020020905号-1',
+  recordLink: 'http://beian.miit.gov.cn',
+  // cyberSecurityRecord: '公安部备案文案',
+  // cyberSecurityLink: '公安部备案指向链接',
 
   // 项目开始时间
   startYear: '2020',
