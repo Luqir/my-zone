@@ -189,8 +189,13 @@ module.exports = {
       'before': false,
       'after': true
     }],
+    'no-extra-semi': 0, // 要求或禁止使用不必要的分号
     'space-before-blocks': [2, 'always'], // 强制在块之前使用一致的空格
-    'space-before-function-paren': [2, 'never'], // 强制在 function的左括号之前使用一致的空格
+    'space-before-function-paren': [2, { // 强制在 function的左括号之前使用一致的空格
+      'anonymous': 'never',
+      'named': 'never',
+      'asyncArrow': 'always'
+    }],
     'space-in-parens': [2, 'never'], // 强制在圆括号内使用一致的空格
     'space-infix-ops': 2, // 中缀操作符周围要不要有空格
     'space-unary-ops': [2, { // 强制在一元操作符前后使用一致的空格
@@ -209,7 +214,8 @@ module.exports = {
     'prefer-const': 2, // 要求使用 const 声明那些声明后不再被修改的变量
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0, // 禁止使用debugger
     'object-curly-spacing': [2, 'always', { // 强制在花括号中使用一致的空格
-      objectsInObjects: false
+      'objectsInObjects': true,
+      'arraysInObjects': true
     }],
     'array-bracket-spacing': [2, 'never'] // 指定数组的元素之间要以空格隔开(, 后面)， never参数：[ 之前和 ] 之后不能带空格，always参数：[ 之前和 ] 之后必须带空格
   }
