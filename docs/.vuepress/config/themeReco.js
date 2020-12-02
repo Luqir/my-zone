@@ -34,8 +34,8 @@ const config = {
   // 备案号 string | boolean
   record: '闽ICP备2020020905号-1',
   recordLink: 'http://beian.miit.gov.cn',
-  // cyberSecurityRecord: '公安部备案文案',
-  // cyberSecurityLink: '公安部备案指向链接',
+  cyberSecurityRecord: '闽公网安备 35050302000659号',
+  cyberSecurityLink: 'http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=35050302000659',
 
   // 项目开始时间
   startYear: '2020',
