@@ -19,7 +19,7 @@ const config = {
       text: 'Category' // 默认 “分类”
     },
     tag: {
-      location: 4, // 在导航栏菜单中所占的位置，默认3
+      location: 3, // 在导航栏菜单中所占的位置，默认3
       text: 'Tag' // 默认 “标签”
     }
   },

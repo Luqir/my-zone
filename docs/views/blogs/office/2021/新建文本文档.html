@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+    <script src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+  </head>
+
+  <body>
+    <button onclick="readFile(jsono)">导出</button>
+    <script type="text/javascript">
+      // 读取excel数据
+      function readFile(file) {
+        let f = file.raw
+        let reader = new FileReader()
+        reader.readAsBinaryString(f)
+        reader.onload = function (e) {
+          let data = e.target.result
+          let wb = xlsx.read(data, { type: 'binary' })
+          let json = xlsx.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
+          console.log(json)
+        }
+      }
+
+      // 导出excel
+      function exportExcel(result) {
+        let sheet = xlsx.utils.json_to_sheet(result)
+        let keys = Object.keys(sheet).sort()
+        let ref = keys[1] + ':' + keys[keys.length - 1]
+        let workbook = {
+          SheetNames: ['nodejs-sheetname'],
+          Sheets: { 'nodejs-sheetname': Object.assign({}, sheet, { '!ref': ref }) } //nodejs-sheetname 为sheet名字
+        }
+        xlsx.writeFile(workbook, filepath)
+      }
+    </script>
+  </body>
+</html>
