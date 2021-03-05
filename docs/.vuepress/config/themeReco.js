@@ -46,13 +46,15 @@ const config = {
       title: '寒含函',
       desc: '积一时之跬步，臻千里之遥程',
       email: 'luqir123@qq.com',
-      link: 'http://www.luqirong.com'
+      link: 'http://www.luqirong.com',
+      logo: '/images/avatar-min.gif'
     },
     {
       title: 'vuepress-theme-reco',
       desc: 'A simple and beautiful vuepress Blog & Doc theme.',
       avatar: 'https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png',
-      link: 'https://vuepress-theme-reco.recoluan.com/'
+      link: 'https://vuepress-theme-reco.recoluan.com/',
+      logo: 'https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png'
     }
   ]
 
