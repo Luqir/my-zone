@@ -28,7 +28,7 @@ const config = {
   lastUpdated: 'Last Updated',
 
   // 作者
-  author: 'luqirong',
+  author: '寒含函',
   authorAvatar: '/images/avatar-min.gif',
 
   // 备案号 string | boolean

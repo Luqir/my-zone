@@ -1,7 +1,7 @@
 {
   "name": "blog",
   "version": "1.0.0",
-  "author": "Luqir",
+  "author": "LuQirong",
   "scripts": {
     "dev": "vuepress dev docs",
     "build": "vuepress build docs",

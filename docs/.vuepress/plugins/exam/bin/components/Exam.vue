@@ -18,8 +18,8 @@
         >退出</el-button>
         <div class="header-icon">
           <svg-icon icon-class="staro" />
-          <svg-icon icon-class="font" @click="mobileDrawer=!mobileDrawer" />
-          <svg-icon icon-class="answer-card" />
+          <i class="icon icon-m_head_typeface" @click="mobileDrawer=!mobileDrawer"></i>
+          <i class="icon icon-m_head_test_card"></i>
         </div>
       </el-header>
       <el-container>
@@ -351,13 +351,18 @@
       custom-class="mobile-drawer-modal"
     >
       <div class="mobile-drawer-modal-title">字体大小调整</div>
-      <el-slider
-        v-model="fontSizeSliderValue"
-        :marks="fontSizeSliderMarks"
-        :min="12"
-        :max="18"
-        :step="2"
-      />
+      <div class="mobile-drawer-modal-content">
+        <span class="a-left">A</span>
+        <el-slider
+          v-model="fontSizeSliderValue"
+          :marks="fontSizeSliderMarks"
+          :show-tooltip="false"
+          :min="12"
+          :max="18"
+          :step="2"
+        />
+        <span class="a-right">A</span>
+      </div>
     </el-drawer>
   </div>
 </template>
@@ -1051,6 +1056,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+@import 'style.css';
+
 .out-icon, .header-time, .header-icon, .progress-bar, .pagation-mobile {
   display: none;
 }
@@ -1780,7 +1787,12 @@ html {
       color: #fff;
       font-size: 20px;
 
-      svg+svg {
+      .svg-icon {
+        vertical-align: -2px;
+        font-size: 22px;
+      }
+
+      i {
         margin-left: 10px;
       }
     }
@@ -1889,6 +1901,7 @@ html {
                       padding-left: 1px;
                       border-radius: 50%;
                       text-align: center;
+                      line-height: 18px;
 
                       &-dot {
                         display: none;
@@ -2012,6 +2025,22 @@ html {
       height: auto !important;
       outline: none;
       padding: 10px 25px 20px 25px;
+
+      &-content {
+        position: relative;
+
+        .el-slider {
+          width: calc(100% - 60px) !important;
+        }
+
+        .a-left {
+          float: left;
+        }
+
+        .a-right {
+          float: right;
+        }
+      }
 
       &-title {
         font-size: 14px;
