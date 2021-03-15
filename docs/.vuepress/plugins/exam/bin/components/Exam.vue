@@ -1056,7 +1056,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@import 'style.css';
+@import '../static/style.css';
 
 .out-icon, .header-time, .header-icon, .progress-bar, .pagation-mobile {
   display: none;
@@ -2028,17 +2028,29 @@ html {
 
       &-content {
         position: relative;
+        width: 100%;
+        margin: 30px 0px 40px;
 
         .el-slider {
           width: calc(100% - 60px) !important;
+          margin: 0px auto;
+          height: 20px;
         }
 
         .a-left {
-          float: left;
+          font-size: 12px;
+          position: absolute;
+          top: 50%;
+          left: 0px;
+          transform: translate(0, -50%);
         }
 
         .a-right {
-          float: right;
+          font-size: 18px;
+          position: absolute;
+          top: 50%;
+          right: 0px;
+          transform: translate(0, -50%);
         }
       }
 
@@ -2051,10 +2063,9 @@ html {
       }
 
       .el-slider {
-        &__runway {
-          margin: 30px 0px 40px;
-        }
-
+        // &__runway {
+        // margin: 30px 0px 40px;
+        // }
         &__button-wrapper {
           outline: none;
         }
