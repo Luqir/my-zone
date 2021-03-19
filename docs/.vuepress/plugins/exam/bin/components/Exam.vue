@@ -360,9 +360,14 @@
           :min="12"
           :max="18"
           :step="2"
+          :change="questionFontSize=answerFontSize=fontSizeSliderValue"
         />
         <span class="a-right">A</span>
       </div>
+      <div
+        class="mobile-drawer-modal-font-demo"
+        :style="`font-size:${fontSizeSliderValue}px`"
+      >字体将被设置为{{ fontSizeSliderMarks[fontSizeSliderValue] }}</div>
     </el-drawer>
   </div>
 </template>
@@ -451,7 +456,7 @@ export default {
       },
       signIdArr: [],
       mobileDrawer: false,
-      fontSizeSliderValue: 12,
+      fontSizeSliderValue: 14,
       fontSizeSliderMarks: { 12: '小', 14: '中', 16: '大', 18: '超大' }
     }
   },
@@ -852,14 +857,14 @@ export default {
     fontsizePlus(e) {
       if (this.questionFontSize < 20) {
         this.questionFontSize = this.questionFontSize + 1
-        this.answerFontSize = this.answerFontSize + 1
+        this.answerFontSize = this.questionFontSize - 2
       }
     },
     // 减小字号
     fontsizeMinus(e) {
       if (this.questionFontSize > 14) {
         this.questionFontSize = this.questionFontSize - 1
-        this.answerFontSize = this.answerFontSize - 1
+        this.answerFontSize = this.questionFontSize - 2
       }
     },
     // 标记
@@ -1639,6 +1644,7 @@ html {
         position: absolute;
         top: 0px;
         left: -20px;
+        display: inline-flex;
       }
     }
   }
@@ -1793,7 +1799,7 @@ html {
       }
 
       i {
-        margin-left: 10px;
+        margin-left: 14px;
       }
     }
   }
@@ -1902,6 +1908,7 @@ html {
                       border-radius: 50%;
                       text-align: center;
                       line-height: 18px;
+                      display: unset;
 
                       &-dot {
                         display: none;
@@ -2035,6 +2042,48 @@ html {
           width: calc(100% - 60px) !important;
           margin: 0px auto;
           height: 20px;
+          display: flex;
+          align-items: center;
+          -webkit-tap-highlight-color: transparent;
+
+          &__runway {
+            height: 1px;
+            background-image: linear-gradient(to bottom, #f5f5f5 0%, #f9f9f9 100%);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 10%);
+            background-color: #C1C1CB;
+          }
+
+          &__bar {
+            height: 0;
+          }
+
+          &__marks {
+            &-stop {
+              width: 1px;
+              height: 7px;
+              background-color: #C1C1CB;
+              top: -3px;
+            }
+
+            &-text {
+              font-size: 10px;
+              white-space: nowrap;
+            }
+          }
+
+          &__button {
+            width: 15px;
+            height: 15px;
+            top: 2.88px;
+            background-image: linear-gradient(to bottom, #ffffff 0%, #ffffff 100%);
+            box-shadow: 0 2px 10px 0 rgba(58, 62, 81, 20%);
+            border: 0px solid transparent;
+
+            &-wrapper {
+              outline: none;
+              height: 30px;
+            }
+          }
         }
 
         .a-left {
@@ -2062,13 +2111,15 @@ html {
         border-bottom: 1px solid #F1F3F8;
       }
 
-      .el-slider {
-        // &__runway {
-        // margin: 30px 0px 40px;
-        // }
-        &__button-wrapper {
-          outline: none;
-        }
+      &-font-demo {
+        width: calc(100% - 60px);
+        height: 62px;
+        line-height: 62px;
+        margin: 0px auto 15px;
+        background-color: #F1F3F8;
+        font-size: 12px;
+        color: #27274A;
+        text-align: center;
       }
     }
   }
