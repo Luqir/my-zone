@@ -18,8 +18,14 @@
         >退出</el-button>
         <div class="header-icon">
           <svg-icon icon-class="staro" />
-          <i class="icon icon-m_head_typeface" @click="mobileDrawer=!mobileDrawer"></i>
-          <i class="icon icon-m_head_test_card"></i>
+          <i
+            class="icon icon-m_head_typeface"
+            @click="mobileDrawerScantron=false;mobileDrawerFontSize=!mobileDrawerFontSize"
+          ></i>
+          <i
+            class="icon icon-m_head_test_card"
+            @click="mobileDrawerFontSize=false;mobileDrawerScantron=!mobileDrawerScantron"
+          ></i>
         </div>
       </el-header>
       <el-container>
@@ -296,7 +302,7 @@
     </el-dialog>
 
     <el-drawer
-      :visible.sync="mobileDrawer"
+      :visible.sync="mobileDrawerFontSize"
       :with-header="false"
       direction="ttb"
       append-to-body
@@ -323,6 +329,20 @@
         class="mobile-drawer-modal-font-demo"
         :style="`font-size:${fontSizeSliderValue}px`"
       >字体设置为{{ fontSizeSliderMarks[fontSizeSliderValue] }}</div>
+    </el-drawer>
+
+    <el-drawer
+      :visible.sync="mobileDrawerScantron"
+      :with-header="false"
+      direction="ttb"
+      append-to-body
+      :modal="false"
+      :show-close="false"
+      class="mobile-drawer"
+      custom-class="mobile-drawer-modal"
+    >
+      <!-- 答题卡 -->
+      <Scantron ref="scantron" :list="list" @cilckToJump="cilckToJump" />
     </el-drawer>
   </div>
 </template>
@@ -411,7 +431,8 @@ export default {
         limit: 25
       },
       signIdArr: [],
-      mobileDrawer: false,
+      mobileDrawerFontSize: false,
+      mobileDrawerScantron: false,
       fontSizeSliderValue: 14,
       fontSizeSliderMarks: { 12: '小', 14: '中', 16: '大', 18: '超大' }
     }
@@ -1024,8 +1045,8 @@ export default {
       return arr
     },
     closeFun() {
-      if (this.mobileDrawer) {
-        this.mobileDrawer = false
+      if (this.mobileDrawerFontSize || this.mobileDrawerScantron) {
+        this.mobileDrawerScantron = this.mobileDrawerFontSize = false
         return
       }
       if (this.status === 1) {

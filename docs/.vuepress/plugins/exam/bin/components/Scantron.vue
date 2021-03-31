@@ -234,7 +234,6 @@ export default {
         color: #ff962a;
         height: 11px;
         width: 12px;
-        margin-bottom: 2px;
       }
 
       &.s2, &.s3 {
