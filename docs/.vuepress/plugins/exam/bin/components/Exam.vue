@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div
     v-if="hackReset"
     class="exam"
@@ -192,7 +192,7 @@
 
               <div class="support">
                 CopyRight © 2020 By
-                <span class="up">Luqir</span>
+                <span class="up">luqirong</span>
               </div>
             </div>
             <!-- 信息栏 -->
@@ -408,7 +408,7 @@ export default {
       listForPageArrBat: [], // 考试题库备份
       pageQuery: {
         page: 1,
-        limit: 1
+        limit: 25
       },
       signIdArr: [],
       mobileDrawer: false,
@@ -533,11 +533,38 @@ export default {
         else return false
       }
     })
+
+    // 手机界面大小下每页1题即可
+    if (document.body.clientWidth < '719') {
+      this.pageQuery.limit = 1
+    }
+    this.windowResizeEvent(() => {
+      // $MQMobile = 719px
+      if (document.body.clientWidth < '719') {
+        this.pageQuery.limit = 1
+      } else {
+        this.pageQuery.limit = 25
+      }
+    })
   },
   beforeDestroy() {
     this.status = 0
   },
   methods: {
+    // 避免 onresize 触发两次
+    windowResizeEvent(callback) {
+      window.onresize = function() {
+        var target = this
+        if (target.resizeFlag) {
+          clearTimeout(target.resizeFlag)
+        }
+
+        target.resizeFlag = setTimeout(function() {
+          callback()
+          target.resizeFlag = null
+        }, 100)
+      }
+    },
     init() {
       // 遍历原题库将二维展开成一维
       let totalLength = 0
@@ -798,10 +825,14 @@ export default {
     // 答对->错题不显示且不可跳转
     displayFun(rightAnswerPoint, wrongAnswerPoint) {
       this.rightAnswerArr.map((item) => {
-        this.$refs.scantron.$refs['box' + item.id][0].parentElement.style['display'] = rightAnswerPoint
+        this.$refs.scantron.$refs['box' + item.id][0].parentElement.style[
+          'display'
+        ] = rightAnswerPoint
       })
       this.wrongAnswerArr.map((item) => {
-        this.$refs.scantron.$refs['box' + item.id][0].parentElement.style['display'] = wrongAnswerPoint
+        this.$refs.scantron.$refs['box' + item.id][0].parentElement.style[
+          'display'
+        ] = wrongAnswerPoint
       })
     },
     selectClass(type) {
