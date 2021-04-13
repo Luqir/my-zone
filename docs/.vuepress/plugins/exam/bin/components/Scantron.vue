@@ -254,7 +254,116 @@ export default {
 
 @media (max-width: $MQMobile) {
   .left {
-    display: none !important;
+    position: unset;
+    width: 100%;
+    box-shadow: none;
+    height: auto;
+    background-color: unset;
+
+    &-header {
+      height: 0;
+    }
+
+    &-body {
+      height: auto;
+    }
+
+    .title {
+      display: none;
+    }
+
+    .card {
+      &-content {
+        padding: 10px;
+        padding-bottom: 20px;
+        margin-bottom: 10px;
+        background: #FFFFFF;
+        border-radius: 4px;
+
+        &-title {
+          font-weight: 400;
+          font-size: 14px;
+          padding-top: 0;
+          padding-bottom: 10px;
+          border-bottom: 1px solid #E6E6E6;
+        }
+      }
+
+      .split {
+        display: none;
+      }
+    }
+
+    .box-list {
+      position: relative;
+      left: 0;
+      padding: 0 5px;
+      font-size: 0;
+      margin-right: -17px;
+      margin-top: 0;
+
+      &-item {
+        width: unset;
+        height: unset;
+        padding-top: 15px;
+        padding-right: 13px;
+        margin: 0;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+        & > span {
+          font-size: 13px;
+          padding: 8px 5px 10px;
+          margin: 0;
+
+          & > svg {
+            width: 12px;
+            height: 12px;
+            top: -7px;
+            right: -6px;
+          }
+        }
+      }
+    }
+
+    &-footer {
+      top: 0;
+      height: 44px;
+      justify-content: center;
+      box-shadow: unset;
+
+      .svg-icon {
+        margin-right: 4px;
+
+        &.s1 {
+          margin-bottom: -2px;
+          width: 16px;
+          height: 16px;
+        }
+
+        &.s2 {
+          height: 17px;
+          width: 17px;
+          margin-bottom: -2px;
+        }
+
+        &.s3 {
+          height: 14px;
+          width: 14px;
+        }
+
+        &.s2, &.s3 {
+          margin-left: 30px;
+        }
+      }
+
+      .icon-span {
+        font-size: 13px;
+
+        &:last-child {
+          padding-right: 0;
+        }
+      }
+    }
   }
 }
 </style>

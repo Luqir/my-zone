@@ -339,7 +339,7 @@
       :modal="false"
       :show-close="false"
       class="mobile-drawer"
-      custom-class="mobile-drawer-modal"
+      custom-class="mobile-drawer-modal scantron"
     >
       <!-- 答题卡 -->
       <Scantron ref="scantron" :list="list" @cilckToJump="cilckToJump" />
@@ -906,6 +906,8 @@ export default {
       } else {
         this.$refs['id' + id][0].scrollIntoView(true) // 顶部对齐
       }
+      // 关闭手机上的答题卡弹出框
+      this.mobileDrawerScantron = false
     },
     clearStatus() {
       // 交卷后禁止hover效果
@@ -1584,7 +1586,7 @@ html {
 }
 
 @media (max-width: $MQMobile) {
-  .header-name, .out-btn, .right, .sign {
+  .header-name, .out-btn, .right, .sign, .content > .left {
     display: none !important;
   }
 
@@ -1855,6 +1857,12 @@ html {
       height: auto !important;
       outline: none;
       padding: 10px 25px 20px 25px;
+
+      &.scantron {
+        height: 100% !important;
+        background: #f0f3f7;
+        padding: 55px 10px 65px;
+      }
 
       &-content {
         position: relative;
