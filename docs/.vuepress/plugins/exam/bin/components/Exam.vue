@@ -342,7 +342,7 @@
       custom-class="mobile-drawer-modal scantron"
     >
       <!-- 答题卡 -->
-      <Scantron ref="scantron" :list="list" @cilckToJump="cilckToJump" />
+      <Scantron ref="scantron1" :list="list" @cilckToJump="cilckToJump" />
     </el-drawer>
   </div>
 </template>
@@ -432,7 +432,7 @@ export default {
       },
       signIdArr: [],
       mobileDrawerFontSize: false,
-      mobileDrawerScantron: false,
+      mobileDrawerScantron: true,
       fontSizeSliderValue: 14,
       fontSizeSliderMarks: { 12: '小', 14: '中', 16: '大', 18: '超大' }
     }
@@ -538,6 +538,7 @@ export default {
     })
 
     this.$nextTick(() => {
+      this.mobileDrawerScantron = false
       // 禁用右键
       document.oncontextmenu = () => {
         if (event.returnValue) event.returnValue = false
@@ -646,6 +647,7 @@ export default {
         } else {
           // 答题卡变红
           this.$refs.scantron.$refs['box' + item.id][0].classList.add('wrong')
+          this.$refs.scantron1.$refs['box' + item.id][0].classList.add('wrong')
           // 存储错误的题目
           item.indexForPage = ++indexForWrong // 分页题号
           this.wrongAnswerArr.push(item)
@@ -753,6 +755,7 @@ export default {
       if (keyAnswer !== correrAnswer) {
         // 答题卡变红
         this.$refs.scantron.$refs['box' + questionsId][0].classList.add('wrong')
+        this.$refs.scantron1.$refs['box' + questionsId][0].classList.add('wrong')
         // 解析框变红
         this.$refs['analysis' + questionsId][0].classList.add('wrong')
       }
@@ -794,8 +797,10 @@ export default {
     commitProcess(id, status) {
       if (status) {
         this.$refs.scantron.$refs['box' + id][0].classList.add('checked')
+        this.$refs.scantron1.$refs['box' + id][0].classList.add('checked')
       } else {
         this.$refs.scantron.$refs['box' + id][0].classList.remove('checked')
+        this.$refs.scantron1.$refs['box' + id][0].classList.remove('checked')
       }
       let temp = 0
       this.answerArr.map((item) => {
@@ -849,9 +854,15 @@ export default {
         this.$refs.scantron.$refs['box' + item.id][0].parentElement.style[
           'display'
         ] = rightAnswerPoint
+        this.$refs.scantron1.$refs['box' + item.id][0].parentElement.style[
+          'display'
+        ] = rightAnswerPoint
       })
       this.wrongAnswerArr.map((item) => {
         this.$refs.scantron.$refs['box' + item.id][0].parentElement.style[
+          'display'
+        ] = wrongAnswerPoint
+        this.$refs.scantron1.$refs['box' + item.id][0].parentElement.style[
           'display'
         ] = wrongAnswerPoint
       })
@@ -881,6 +892,7 @@ export default {
         this.signIdArr.push(id)
         event.currentTarget.className = 'sign checked'
         this.$refs.scantron.$refs['box' + id][0].firstElementChild.style.display = 'unset'
+        this.$refs.scantron1.$refs['box' + id][0].firstElementChild.style.display = 'unset'
       } else {
         const index = this.signIdArr.indexOf(id)
         if (index > -1) {
@@ -888,6 +900,7 @@ export default {
         }
         event.currentTarget.className = 'sign'
         this.$refs.scantron.$refs['box' + id][0].firstElementChild.style.display = 'none'
+        this.$refs.scantron1.$refs['box' + id][0].firstElementChild.style.display = 'none'
       }
     },
     // 检测问题有几个选项(以第4个为准比较快,数据库共6个选项)
@@ -1074,7 +1087,7 @@ export default {
 <style lang="stylus" scoped>
 @import '../static/style.css';
 
-.out-icon, .header-time, .header-icon, .progress-bar, .pagation-mobile {
+.out-icon, .header-time, .header-icon, .progress-bar, .pagation-mobile, .mobile-drawer {
   display: none;
 }
 
@@ -1850,6 +1863,7 @@ html {
   }
 
   .mobile-drawer {
+    display: unset;
     margin-top: 45px;
     background-color: rgba(0, 0, 0, 0.5);
 
