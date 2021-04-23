@@ -112,7 +112,8 @@ export default {
 
   .card {
     height: calc(100% - 38px);
-    overflow: auto;
+    overflow-y: scroll;
+    overflow-x: hidden;
 
     &::-webkit-scrollbar-thumb {
       background: #dcdfe6;

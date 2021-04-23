@@ -343,6 +343,9 @@
     >
       <!-- 答题卡 -->
       <Scantron ref="scantron1" :list="list" @cilckToJump="cilckToJump" />
+      <div class="submit-btn">
+        <div class="btn3" @click="submit">交卷并查看结果</div>
+      </div>
     </el-drawer>
   </div>
 </template>
@@ -1872,10 +1875,48 @@ html {
       outline: none;
       padding: 10px 25px 20px 25px;
 
+      .el-drawer__body {
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+
       &.scantron {
         height: 100% !important;
         background: #f0f3f7;
         padding: 55px 10px 65px;
+      }
+
+      .submit-btn {
+        position: fixed;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin-left: -10px;
+        height: 65px;
+        padding: 10px;
+        font-size: 14px;
+
+        .btn3 {
+          height: 42px;
+          border: 1px solid #1a8cfe;
+          border-radius: 22px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: #1a8cfe;
+          color: #fff;
+          flex: 1;
+
+          &:active {
+            background-color: #2064b7;
+            border-color: #1a5399;
+          }
+        }
       }
 
       &-content {
