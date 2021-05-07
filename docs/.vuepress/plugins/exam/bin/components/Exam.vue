@@ -17,7 +17,17 @@
           @click="closeFun"
         >退出</el-button>
         <div class="header-icon">
-          <svg-icon icon-class="staro" />
+          <svg-icon
+            v-if="staroBool"
+            icon-class="staro"
+            @click="signFun($refs['sign' + listForPageArrBat[pageQuery.page - 1].id][0],listForPageArrBat[pageQuery.page - 1].id)"
+          />
+          <svg-icon
+            v-else
+            icon-class="star"
+            class="star"
+            @click="signFun($refs['sign' + listForPageArrBat[pageQuery.page - 1].id][0],listForPageArrBat[pageQuery.page - 1].id)"
+          />
           <i
             class="icon icon-m_head_typeface"
             @click="mobileDrawerScantron=false;mobileDrawerFontSize=!mobileDrawerFontSize"
@@ -437,7 +447,8 @@ export default {
       mobileDrawerFontSize: false,
       mobileDrawerScantron: true,
       fontSizeSliderValue: 14,
-      fontSizeSliderMarks: { 12: '小', 14: '中', 16: '大', 18: '超大' }
+      fontSizeSliderMarks: { 12: '小', 14: '中', 16: '大', 18: '超大' },
+      staroBool: true // 手机界面下的标记
     }
   },
   computed: {
@@ -477,6 +488,13 @@ export default {
       newPage === 1
         ? (this.$refs.pageBtn1.className = 'btn1 first')
         : (this.$refs.pageBtn1.className = 'btn1')
+
+      // 手机翻页后标记回填
+      if (this.signIdArr.indexOf(this.listForPageArrBat[newPage - 1].id) !== -1) {
+        this.staroBool = false
+      } else {
+        this.staroBool = true
+      }
     },
     status(newValue, oldValue) {
       // 考试状态
@@ -891,9 +909,20 @@ export default {
     },
     // 标记
     signFun(event, id) {
-      if (event.currentTarget.className === 'sign') {
-        this.signIdArr.push(id)
-        event.currentTarget.className = 'sign checked'
+      let eve
+      if (typeof event.currentTarget !== 'undefined') {
+        eve = event.currentTarget
+      } else {
+        eve = event
+        this.staroBool = !this.staroBool
+      }
+      if (eve.className === 'sign') {
+        // 避免翻页标记回填的时候重复保存 id
+        const index = this.signIdArr.indexOf(id)
+        if (index === -1) {
+          this.signIdArr.push(id)
+        }
+        eve.className = 'sign checked'
         this.$refs.scantron.$refs['box' + id][0].firstElementChild.style.display = 'unset'
         this.$refs.scantron1.$refs['box' + id][0].firstElementChild.style.display = 'unset'
       } else {
@@ -901,7 +930,7 @@ export default {
         if (index > -1) {
           this.signIdArr.splice(index, 1)
         }
-        event.currentTarget.className = 'sign'
+        eve.className = 'sign'
         this.$refs.scantron.$refs['box' + id][0].firstElementChild.style.display = 'none'
         this.$refs.scantron1.$refs['box' + id][0].firstElementChild.style.display = 'none'
       }
@@ -1637,6 +1666,10 @@ html {
       .svg-icon {
         vertical-align: -2px;
         font-size: 22px;
+
+        &.star {
+          color: #ff962a;
+        }
       }
 
       i {
