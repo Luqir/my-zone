@@ -4,10 +4,10 @@ const themeConfig = require('./config/')
 const plugins = require('./config/plugins')
 
 module.exports = {
-  title: '寒含函のblog',
+  title: '寒含函',
 
   // 加载页介绍
-  description: '不畏将来 不念过往',
+  description: '想法 + 实践 = BUG',
 
   // 项目打包目录
   dest: 'public',

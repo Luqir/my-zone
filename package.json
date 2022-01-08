@@ -1,7 +1,7 @@
 {
   "name": "blog",
   "version": "1.0.0",
-  "author": "LuQirong",
+  "author": "寒含函",
   "scripts": {
     "dev": "vuepress dev docs",
     "build": "vuepress build docs",
@@ -24,5 +24,5 @@
     "element-ui": "^2.14.1",
     "vue-class-component": "^7.2.6"
   },
-  "description": "不畏将来 不念过往"
+  "description": "想法 + 实践 = BUG"
 }

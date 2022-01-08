@@ -1,5 +1,5 @@
 ---
-title: 寒含函のblog
+title: 寒含函
 date: 2020-08-30
 ---
 
