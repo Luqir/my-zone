@@ -1,5 +1,5 @@
 ---
-title: txt 转 kindle 电子书
+title: kindle 电子书制作
 date: 2022-01-24
 categories:
   - 电子书
@@ -9,7 +9,18 @@ tags:
 ---
 
 > 要想多设备同步和字体样式，kindle 就不可能有封面，试了很多软件如 VBook EasyPub Calibre 等，都不行，只能要么 USB 传书不要同步，要么不要样式用 mobi7 格式，切记不要浪费时间
+#### epub -> mobi
+1. 直接在 https://zh.fr1lib.org/ 这个网站找有没有书
+2. 下载 epub 格式书
+3. 使用 kindlegen 工具将 epub 转为 mobi
 
+```powershell
+kindlegen "文件路径" -dont_append_source
+```
+
+4. 用邮箱或者拉入 Calibre 软件后再邮箱推送
+
+#### txt -> mobi
 1. 先用 vscode 或者其他编辑器打开 txt 添加正则进行编辑
 - 去除作者的（ps）
 - 去除广告
@@ -34,6 +45,8 @@ tags:
 > kindle官网是说0.625，但是我自己截图用ps抠图发现其实是几乎接近0.65，实际测试过0.625确实会比收藏夹更窄
 
 > kindle 书籍的图片在目录 system\thumbnails 中 
+
+> 封面可要可不要...反正看不见
 6. 放入封面（用 ps 裁剪好尺寸以后再用 https://tinypng.com/ 这个网站无损压缩一下），设置好书名、作者
 7. 生成 mobi 文件
 8. 用邮箱或者拉入 Calibre 软件后再邮箱推送
