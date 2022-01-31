@@ -141,7 +141,7 @@ img.attpic {
 .titlel2single,
 .titlel3single {
   font-size: 1.5em;
-  margin: 45vh 2em auto;
+  margin: 45% 0 0;
   text-align: center;
 }
 
