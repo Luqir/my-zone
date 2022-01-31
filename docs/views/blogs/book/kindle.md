@@ -8,7 +8,7 @@ tags:
   - kwp4
 ---
 
-> 要想多设备同步和字体样式，kindle 就不可能有封面，试了很多软件如 VBook EasyPub Calibre 等，都不行，只能要么 USB 传书不要同步，要么不要样式用 mobi7 格式，切记不要浪费时间
+> kindle 电子书想要多设备同步只能是 mobi 格式，要想同步和且有不同字体等样式，kindle 就不可能有封面，试了很多软件如 VBook、EasyPub、Calibre 等，都不行，只能要么 USB 传书不要同步，要么不要样式用 mobi7 格式，切记不要浪费时间
 ### epub -> mobi
 1. 直接在 https://zh.fr1lib.org/ 这个网站找有没有书
 2. 下载 epub 格式书
@@ -21,7 +21,8 @@ kindlegen "文件路径" -dont_append_source
 4. 用邮箱或者拉入 Calibre 软件后再邮箱推送
 
 ### txt -> mobi
-推荐用 EaEsyPub 软件，因为 EaEsyPub 可以自定义 CSS，有时间可以自己排版
+推荐用 EaEsyPub 软件，因为 EasyPub 可以自定义 CSS，有时间可以自己排版
+> EasyPub v1.50 转 mobi 有 bug，推荐先转成 epub 格式再用上面的方法转成 mobi 格式
 #### VBook v3.5.1.1
 1. 先用 vscode 或者其他编辑器打开 txt 添加正则进行编辑
 - 去除作者的（ps）
