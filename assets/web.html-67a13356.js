@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-8706538c","path":"/docs/ctf/web.html","title":"Web","lang":"en-US","frontmatter":{"title":"Web","date":"2023-10-27T00:00:00.000Z"},"headers":[],"git":{"createdTime":1698413642000,"updatedTime":1698413642000,"contributors":[{"name":"Luqir","email":"luqir123@qq.com","commits":1}]},"filePathRelative":"docs/ctf/web.md"}');export{e as data};

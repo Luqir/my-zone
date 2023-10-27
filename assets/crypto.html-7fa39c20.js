@@ -1,0 +1,1 @@
+const t=JSON.parse('{"key":"v-5b7e673a","path":"/docs/ctf/crypto.html","title":"Crypto","lang":"en-US","frontmatter":{"title":"Crypto","date":"2023-10-27T00:00:00.000Z"},"headers":[],"git":{"createdTime":1698413642000,"updatedTime":1698413642000,"contributors":[{"name":"Luqir","email":"luqir123@qq.com","commits":1}]},"filePathRelative":"docs/ctf/crypto.md"}');export{t as data};
